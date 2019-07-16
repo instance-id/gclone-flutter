@@ -13,6 +13,7 @@ require (
 	github.com/getlantern/systray v0.0.0-20190626064521-f2fa635d0474
 	github.com/go-flutter-desktop/go-flutter v0.24.1
 	github.com/go-stack/stack v1.8.0 // indirect
+	github.com/instance-id/gclone-plugins/version v0.0.1
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/oxtoacart/bpool v0.0.0-20190530202638-03653db5a59c // indirect
 	github.com/pkg/errors v0.8.1
@@ -21,8 +22,13 @@ require (
 	golang.org/x/crypto v0.0.0-20190701094942-4def268fd1a4
 	golang.org/x/sys v0.0.0-20190712062909-fae7ac547cb7 // indirect
 	golang.org/x/text v0.3.2
+	golang.org/x/tools v0.0.0-20190328211700-ab21143f2384
 	gopkg.in/gcfg.v1 v1.2.3
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 )
 
 replace github.com/instance-id/gclone_flutter => ../../../../go/src/github.com/instance-id/gclone_flutter
+
+replace github.com/instance-id/gclone-plugins/version => ../../../../github.com/instance-id/gclone-plugins/version
+
+replace github.com/instance-id/gclone_flutter/backend/plugins/data => ../../../../go/src/github.com/instance-id/gclone_flutter/backend/plugins/data

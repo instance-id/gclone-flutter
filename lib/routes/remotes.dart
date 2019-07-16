@@ -7,6 +7,8 @@ import 'package:flutter/services.dart';
 import 'package:gclone/route.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
 import '../app_meta.dart' show GITHUB_URL;
+import '../get_data.dart';
+import '../get_version.dart';
 
 class Remotes extends StatefulWidget {
   //final String filePath;
@@ -20,6 +22,26 @@ class Remotes extends StatefulWidget {
   }
 }
 
+buildFutureBuilder() {
+  return FutureBuilder<String>(
+      future: GetVersionPlugin.version,
+      builder: (c, snapshot) {
+        if (!snapshot.hasData) {
+          return Container();
+        }
+        return Text(snapshot.data);
+      });
+}
+
+  FutureBuilder<String> getVersion() => new FutureBuilder<String>(
+      future: GetVersionPlugin.version,
+      builder: (c, snapshot) {
+        if (!snapshot.hasData) {
+          return Container();
+        }
+        return Text(snapshot.data);
+      });
+
 class RemotesState extends State<Remotes> {
   double _textScaleFactor = 1.0;
 
@@ -27,7 +49,7 @@ class RemotesState extends State<Remotes> {
     return <Widget>[
       FloatingActionButton(
         child: Icon(Icons.open_in_new),
-        tooltip: 'View code on github',
+        tooltip: 'Vawdawd on github',
         onPressed: () => url_launcher.launch("google.com"),
       ),
       FloatingActionButton(
@@ -51,17 +73,39 @@ class RemotesState extends State<Remotes> {
   Widget build(BuildContext context) {
     // Loading string from file returns a Future<String>, so instead of returning directly the
     // widget, we need a FutureBuilder.
+//    return Scaffold(
+//      body: getVersion(),
+//      floatingActionButton: AnimatedFloatingActionButton(
+//        fabButtons: _buildFloatingButtons(),
+//        colorStartAnimation: Colors.blue,
+//        colorEndAnimation: Colors.red,
+//        animatedIconData: AnimatedIcons.menu_close,
+//      ),
+//    );
+
     return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.all(4.0),
-        //child: _getRemotes(snapshot.data, context),
-      ),
-      floatingActionButton: AnimatedFloatingActionButton(
-        fabButtons: _buildFloatingButtons(),
-        colorStartAnimation: Colors.blue,
-        colorEndAnimation: Colors.red,
-        animatedIconData: AnimatedIcons.menu_close,
-      ),
+        appBar: AppBar(),
+        body: FutureBuilder<Map>(
+            future: GetDataPlugin.remotesGet,
+            builder: (BuildContext context, AsyncSnapshot<Map> snapshot) {
+              if (!snapshot.hasData) {
+                return Container();
+              }
+            Map data = snapshot.data;
+              return ListView.builder(
+                itemCount: data.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Column(
+                    children: <Widget>[
+                      ListTile(
+                        title: Text(data[index]),
+                      )
+                    ],
+                  );
+                },
+              );
+            }
+        )
     );
   }
 }

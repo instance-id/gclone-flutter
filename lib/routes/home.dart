@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:gclone/get_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../get_version.dart';
 import '../route.dart';
 import '../app_meta.dart'
     show
@@ -9,6 +11,7 @@ import '../app_meta.dart'
     kRoutenameToRouteMap,
     kSharedPreferences,
     MyRouteGroup;
+
 
 class HomeRoute extends MyRoute {
   const HomeRoute([String sourceFile = 'lib/routes/home.dart'])
@@ -35,6 +38,19 @@ class _ListItem {
   _ListItem(this.value, this.checked);
   final String value;
   bool checked;
+}
+
+buildFutureBuilder() {
+  FutureBuilder<Map>(
+      future: GetDataPlugin.remotesGet,
+      builder: (BuildContext context, AsyncSnapshot<Map> snapshot)  {
+        if (!snapshot.hasData) {
+          return Container();
+        }
+        Map data = snapshot.data;
+        print('PIG BENIS!!!!!!! ${data.keys.toString()}');
+        return Text(data.keys.toString());
+      });
 }
 
 class _HomePageState extends State<HomePage> {
@@ -73,13 +89,16 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: _appbarButtons,
     );
   }
-  bool _reverseSort = false;
-  static final _items = <String>[
-    'Google Drive',
-    'Google Cloud',
-    'External USB Drive',
 
-  ].map((item) => _ListItem(item, false)).toList();
+
+  bool _reverseSort = false;
+  // --- List Values -------------------------------------------------------------------------------------------------------
+//  var _items = <String>[
+//    'Google Cloud',
+//    'External USB Drive',
+//  ].map((item) => _ListItem(item, false)).toList();
+
+  var _items = buildFutureBuilder().map((item) => _ListItem(item, false)).toList();
 
   // Handler called by ReorderableListView onReorder after a list child is
   // dropped into a new position.
@@ -115,7 +134,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ],
     );
-    final _listTiles = _items
+    final _listTiles = buildFutureBuilder()
         .map(
           (item) => CheckboxListTile(
         key: Key(item.value),
@@ -124,12 +143,12 @@ class _HomePageState extends State<HomePage> {
           setState(() => item.checked = newValue);
         },
         title: Text('${item.value}'),
-        isThreeLine: true,
+         isThreeLine: true,
         subtitle: Text('${item.value}, checked=${item.checked}'),
         secondary: Icon(Icons.drag_handle),
       ),
-    )
-        .toList();
+    ).toList();
+
     return Scaffold(
       appBar: _appbar,
       body: ReorderableListView(
@@ -138,6 +157,8 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
+  // --- Bottom buttons ----------------------------------------------------------------------------------------------------
 
   Widget _getBottomBar() {
     return Material(
@@ -178,6 +199,4 @@ class _HomePageState extends State<HomePage> {
     //  ]),
   //  );
   }
-
-
 }

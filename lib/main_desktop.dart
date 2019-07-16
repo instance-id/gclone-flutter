@@ -1,6 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import './app_meta.dart' as my_app_meta;
+
+
+// The client and host sides of a channel are connected through
+// a channel name passed in the channel constructor.
 
 void main() {
   debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;

@@ -8,9 +8,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import './route.dart';
 import './routes/about.dart';
 import './routes/home.dart';
-
-
 import './routes/sub_tabs.dart';
+import './routes/version_route.dart';
 
 
 // Metadatas about this app:
@@ -95,7 +94,8 @@ const kMyAppRoutesStructure = <MyRouteGroup>[
     groupName: 'Tabs',
     icon: Icon(Icons.cloud),
     routes: <MyRoute>[
-      TabsExample()
+      TabsExample(),
+      DisplayVersion()
     ],
   ),
 ];
