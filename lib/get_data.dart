@@ -16,9 +16,13 @@ class GetDataPlugin {
 //    return data;
 //  }
 
-  static Future<Map> get remotesGet async {
-    final Map data = await _channel.invokeMethod('getRemotes', {});
+  static Future<List<dynamic>> get remotesGet async {
+    final List<dynamic> data = await _channel.invokeMethod('getRemotes', {});
     return data;
+  }
+
+  Future<List<dynamic>> remotesGetData() async {
+    return await _channel.invokeMethod('getRemotes', {});
   }
 }
 

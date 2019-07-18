@@ -33,14 +33,14 @@ buildFutureBuilder() {
       });
 }
 
-  FutureBuilder<String> getVersion() => new FutureBuilder<String>(
-      future: GetVersionPlugin.version,
-      builder: (c, snapshot) {
-        if (!snapshot.hasData) {
-          return Container();
-        }
-        return Text(snapshot.data);
-      });
+FutureBuilder<String> getVersion() => new FutureBuilder<String>(
+    future: GetVersionPlugin.version,
+    builder: (c, snapshot) {
+      if (!snapshot.hasData) {
+        return Container();
+      }
+      return Text(snapshot.data);
+    });
 
 class RemotesState extends State<Remotes> {
   double _textScaleFactor = 1.0;
@@ -85,27 +85,25 @@ class RemotesState extends State<Remotes> {
 
     return Scaffold(
         appBar: AppBar(),
-        body: FutureBuilder<Map>(
+        body: FutureBuilder<List<dynamic>>(
             future: GetDataPlugin.remotesGet,
-            builder: (BuildContext context, AsyncSnapshot<Map> snapshot) {
+            builder:
+                (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
               if (!snapshot.hasData) {
                 return Container();
               }
-            Map data = snapshot.data;
               return ListView.builder(
-                itemCount: data.length,
+                itemCount: snapshot.data.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Column(
                     children: <Widget>[
                       ListTile(
-                        title: Text(data[index]),
+                        title: Text(snapshot.data[index].toString()),
                       )
                     ],
                   );
                 },
               );
-            }
-        )
-    );
+            }));
   }
 }

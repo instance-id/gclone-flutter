@@ -2,6 +2,7 @@
 // List<Tuple2> object. And it provides functions to get app's routing table or
 // app's navigation drawer menu items from the declared metadata.
 import 'package:flutter/material.dart';
+import 'package:gclone/routes/home_2.dart';
 import 'package:gclone/routes/remotes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -25,7 +26,7 @@ const GOOGLEPLAY_URL =
 const GITHUB_URL = 'https://github.com/instance-id/gclone_flutter';
 const AUTHOR_SITE = 'http://instance.id';
 
-const kHomeRoute = HomeRoute();
+const kHomeRoute = HomeRoute2();
 //const kHomeRoute = Remotes();
 const kAboutRoute = AboutRoute();
 

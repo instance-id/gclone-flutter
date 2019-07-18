@@ -41,9 +41,9 @@ func (d *DataPlugin) getDataFunc(arguments interface{}) (reply interface{}, err 
 
 func (d *DataPlugin) getRemotesFunc(arguments interface{}) (reply interface{}, err error) {
 
-	var sectionList = make(map[interface{}]interface{})
-
 	_, sections := GetRemotes()
+	var sectionList = make([]interface{}, len(sections))
+
 	for k, v := range sections {
 		//RMData[v] = &RemoteDataConfig{Name: v}
 		//secData, _ := cfg.GetSection(v)
@@ -54,7 +54,7 @@ func (d *DataPlugin) getRemotesFunc(arguments interface{}) (reply interface{}, e
 		//	RMData[v] = SetupDrive(v, secData)
 		//}
 
-		sectionList[string(k)] = v
+		sectionList[k] = v
 	}
 
 	return sectionList, nil

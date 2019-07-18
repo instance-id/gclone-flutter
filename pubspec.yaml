@@ -27,6 +27,11 @@ dependencies:
   scoped_model: '1.0.1'
   shared_preferences: ' 0.5.3+1'
   url_launcher: '5.0.3'
+  font_awesome_flutter: ^8.5.0
+  flutter_reorderable_list:
+    path: ../../knopp/flutter_reorderable_list
+
+
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -49,6 +54,11 @@ flutter:
   uses-material-design: true
 
   fonts:
+    - family: Raleway
+      fonts:
+        - asset: fonts/Raleway/Raleway-Regular.ttf
+        - asset: fonts/Raleway/Raleway-Thin.ttf
+          style: normal
     - family: Roboto
       fonts:
         - asset: fonts/Roboto/Roboto-Thin.ttf
@@ -63,10 +73,13 @@ flutter:
           weight: 700
         - asset: fonts/Roboto/Roboto-Black.ttf
           weight: 900
+
   assets:
     # *Tip*: keep the slash at the end of folder path adds all files to
     # assets. Note: this doesn't work with subfolders.
     # c.f. https://github.com/flutter/flutter/issues/4890#issuecomment-407327749
     - lib/routes/
     - res/images/
+    - desktop/assets/drive-steering-wheel.jpg
+    - desktop/assets/line.png
     # - packages/flutter_gallery_assets/animated_images/animated_flutter_stickers.webp

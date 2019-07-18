@@ -11,7 +11,7 @@ require (
 	github.com/getlantern/hidden v0.0.0-20190325191715-f02dbb02be55 // indirect
 	github.com/getlantern/ops v0.0.0-20190325191751-d70cb0d6f85f // indirect
 	github.com/getlantern/systray v0.0.0-20190626064521-f2fa635d0474
-	github.com/go-flutter-desktop/go-flutter v0.24.1
+	github.com/go-flutter-desktop/go-flutter v0.26.0
 	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/instance-id/gclone-plugins/version v0.0.1
 	github.com/mitchellh/go-homedir v1.1.0
