@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:gclone/animations/slide_in.dart';
 import 'package:gclone/get_data.dart';
 import 'package:gclone/models/lesson.dart';
+
 import '../DetailPage.dart';
 import '../icons.dart';
 import '../route.dart';
@@ -128,22 +130,23 @@ class _HomePageState2 extends State<HomePage2> {
         );
 
     Card makeCard(BuildContext context, MyItem item, Lesson lesson) => Card(
-          key: Key(item.key),
-          elevation: 8.0,
-          margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
-          child: Container(
-            //decoration: BoxDecoration(color: Color.fromRGBO(64, 75, 96, .9)),
-            child: _buildListTile(item, lesson),
-          ),
-        );
+        key: Key(item.key),
+        elevation: 8.0,
+        margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+        child: Container(
+          //decoration: BoxDecoration(color: Color.fromRGBO(64, 75, 96, .9)),
+          child: _buildListTile(item, lesson),
+        ));
 
     final makeBody = Container(
         // decoration: BoxDecoration(color: Color.fromRGBO(58, 66, 86, 1.0)),
         child: ReorderableListView(
       padding: EdgeInsets.only(top: 20.0),
       children: _remotesList
-          .map((MyItem item) =>
-              makeCard(context, item, lessons[int.parse(item.key)]))
+          .map((MyItem item) => SlideFadeIn(
+              Key(item.key),
+              (double.parse(item.key) * 0.3) + 0.5,
+              makeCard(context, item, lessons[int.parse(item.key)])))
           .toList(),
       onReorder: (oldIndex, newIndex) {
         setState(() {
