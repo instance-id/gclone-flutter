@@ -1,6 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:simple_animations/simple_animations.dart';
 
+AnimationStatusListener animStatus;
+bool _setupComplete = false;
+bool get setupComplete => _setupComplete;
+set setupComplete(bool completed) => _setupComplete = completed;
+
+void _listenToAnimationFinished(status) {
+  if (status == AnimationStatus.completed) {
+    setupComplete = true;
+  }
+}
+
 class SlideFadeIn extends StatelessWidget {
   SlideFadeIn(Key key, this.delay, this.child) : super(key: key);
 
@@ -21,12 +32,14 @@ class SlideFadeIn extends StatelessWidget {
       delay: Duration(milliseconds: (300 * delay).round()),
       duration: tween.duration,
       tween: tween,
+      playback: _setupComplete ? Playback.PAUSE : Playback.PLAY_FORWARD,
       child: child,
       builderWithChild: (context, child, animation) => Opacity(
         opacity: animation["opacity"],
         child: Transform.translate(
             offset: Offset(animation["translateX"], 0), child: child),
       ),
+      animationControllerStatusListener: _listenToAnimationFinished,
     );
   }
 }

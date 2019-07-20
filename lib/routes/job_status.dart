@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+
 import '../get_version.dart';
 import '../route.dart';
 
-class JobStatus extends MyRoute {
+class JobStatus extends AppRoutes {
   const JobStatus([String sourceFile = 'lib/routes/tabs.dart'])
       : super(sourceFile);
 

@@ -2,8 +2,7 @@
 // List<Tuple2> object. And it provides functions to get app's routing table or
 // app's navigation drawer menu items from the declared metadata.
 import 'package:flutter/material.dart';
-import 'package:gclone/routes/home_2.dart';
-import 'package:gclone/routes/remotes.dart';
+import 'package:gclone/routes/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import './route.dart';
@@ -12,13 +11,12 @@ import './routes/home.dart';
 import './routes/sub_tabs.dart';
 import './routes/version_route.dart';
 
-
 // Metadatas about this app:
 // *Note*: when APP_VERSION is changed, remember to also update pubspec.yaml.
 const APP_VERSION = 'v0.0.1';
 const APP_NAME = 'gclone';
 final kAppIcon =
-Image.asset('res/images/launcher_icon.png', height: 64.0, width: 64.0);
+    Image.asset('res/images/launcher_icon.png', height: 64.0, width: 64.0);
 const APP_DESCRIPTION = 'A Rclone multiplatform GUI '
     '\n\nDeveloped by instance.id.';
 const GOOGLEPLAY_URL =
@@ -26,14 +24,13 @@ const GOOGLEPLAY_URL =
 const GITHUB_URL = 'https://github.com/instance-id/gclone_flutter';
 const AUTHOR_SITE = 'http://instance.id';
 
-const kHomeRoute = HomeRoute2();
-//const kHomeRoute = Remotes();
+const kHomeRoute = HomeRoute();
 const kAboutRoute = AboutRoute();
 
 // All routes should use this same preference instance, to avoid unexpected
 // states-not-updated issues.
 final Future<SharedPreferences> kSharedPreferences =
-SharedPreferences.getInstance();
+    SharedPreferences.getInstance();
 
 // A class to manage the bookmark status of routes.
 class BookmarkManager {
@@ -86,7 +83,7 @@ class MyRouteGroup {
       {@required this.groupName, @required this.icon, @required this.routes});
   final String groupName;
   final Widget icon;
-  final List<MyRoute> routes;
+  final List<AppRoutes> routes;
 }
 
 // --- Routes on page -------------------------------------------------------------------------------------------------
@@ -94,31 +91,28 @@ const kMyAppRoutesStructure = <MyRouteGroup>[
   MyRouteGroup(
     groupName: 'Tabs',
     icon: Icon(Icons.cloud),
-    routes: <MyRoute>[
-      TabsExample(),
-      DisplayVersion()
-    ],
+    routes: <AppRoutes>[TabsExample(), DisplayVersion()],
   ),
 ];
 
 final _allRoutes = kMyAppRoutesStructure.expand((group) => group.routes);
 
 // Mapping route names to routes.
-final kRoutenameToRouteMap = Map<String, MyRoute>.fromIterable(
+final kRoutenameToRouteMap = Map<String, AppRoutes>.fromIterable(
   _allRoutes,
   key: (route) => route.routeName,
   value: (route) => route,
 )..addAll(
-  {
-    // By default go to home screen. (Navigator.defaultRouteName is just '/')
-    Navigator.defaultRouteName: kHomeRoute,
-    kAboutRoute.routeName: kAboutRoute,
-  },
-);
+    {
+      // By default go to home screen. (Navigator.defaultRouteName is just '/')
+      Navigator.defaultRouteName: kHomeRoute,
+      kAboutRoute.routeName: kAboutRoute,
+    },
+  );
 
 // The app's root-level routing table.
 Map<String, WidgetBuilder> kRoutingTable = kRoutenameToRouteMap.map(
-      (routeName, route) {
+  (routeName, route) {
     final widgetBuilder = (BuildContext context) => route;
     return MapEntry<String, WidgetBuilder>(routeName, widgetBuilder);
   },

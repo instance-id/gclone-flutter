@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_reorderable_list/flutter_reorderable_list.dart';
+import 'helpers/flutter_reorderable_list.dart';
 
-enum ReorderableListSimpleSide {Right, Left}
+enum ReorderableListSimpleSide { Right, Left }
 
 class ReorderableListSimple extends StatefulWidget {
   ReorderableListSimple({
@@ -23,7 +23,8 @@ class ReorderableListSimple extends StatefulWidget {
   final EdgeInsets padding;
 
   @override
-  State<ReorderableListSimple> createState() => new _ReorderableListSimpleState();
+  State<ReorderableListSimple> createState() =>
+      new _ReorderableListSimpleState();
 }
 
 class _ReorderableListSimpleState extends State<ReorderableListSimple> {
@@ -43,11 +44,13 @@ class _ReorderableListSimpleState extends State<ReorderableListSimple> {
   }
 
   int _oldIndexOfKey(Key key) {
-    return widget.children.indexWhere((Widget w) => Key(w.hashCode.toString()) == key);
+    return widget.children
+        .indexWhere((Widget w) => Key(w.hashCode.toString()) == key);
   }
 
   int _indexOfKey(Key key) {
-    return _children.indexWhere((Widget w) => Key(w.hashCode.toString()) == key);
+    return _children
+        .indexWhere((Widget w) => Key(w.hashCode.toString()) == key);
   }
 
   Widget _buildReorderableItem(BuildContext context, int index) {
@@ -83,7 +86,7 @@ class _ReorderableListSimpleState extends State<ReorderableListSimple> {
       //           },
       //           childCount: widget.children.length,
       //         ),
-      //       )          
+      //       )
       //     ],
       //   ),
       // ),
@@ -111,7 +114,6 @@ class _ReorderableListSimpleState extends State<ReorderableListSimple> {
   }
 }
 
-
 class ReorderableItemSimple extends StatelessWidget {
   ReorderableItemSimple({
     @required Key key,
@@ -129,11 +131,9 @@ class ReorderableItemSimple extends StatelessWidget {
   final Widget innerItem;
 
   Color _iconColor(ThemeData theme, ListTileTheme tileTheme) {
-    if (tileTheme?.selectedColor != null)
-      return tileTheme.selectedColor;
+    if (tileTheme?.selectedColor != null) return tileTheme.selectedColor;
 
-    if (tileTheme?.iconColor != null)
-      return tileTheme.iconColor;
+    if (tileTheme?.iconColor != null) return tileTheme.iconColor;
 
     switch (theme.brightness) {
       case Brightness.light:
@@ -158,15 +158,14 @@ class ReorderableItemSimple extends StatelessWidget {
 
     if (handleSide == ReorderableListSimpleSide.Right) children.add(item);
     children.add(ReorderableListener(
-      child: Container(
-          alignment: Alignment.centerLeft,
-          child: icon
-      ),
+      child: Container(alignment: Alignment.centerLeft, child: icon),
     ));
     if (handleSide == ReorderableListSimpleSide.Left) children.add(item);
 
     final Row row = Row(
-      mainAxisAlignment: handleSide == ReorderableListSimpleSide.Right ? MainAxisAlignment.end : MainAxisAlignment.start,
+      mainAxisAlignment: handleSide == ReorderableListSimpleSide.Right
+          ? MainAxisAlignment.end
+          : MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: children,
     );

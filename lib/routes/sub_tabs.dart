@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+
 import '../route.dart';
 
-class TabsExample extends MyRoute {
+class TabsExample extends AppRoutes {
   const TabsExample([String sourceFile = 'lib/routes/tabs.dart'])
       : super(sourceFile);
 

@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:gclone/routes/remotes.dart';
 import 'package:gclone/routes/job_status.dart';
+import 'package:gclone/routes/schedule_jobs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
+
 import './app_meta.dart' as my_app_meta;
 
-abstract class MyRoute extends StatefulWidget {
+abstract class AppRoutes extends StatefulWidget {
   // Path of source file (relative to project root). The file's content will be
   // shown in the "Code" tab.
   final String _sourceFile;
 
   static of(BuildContext context) =>
-      context.rootAncestorStateOfType(const TypeMatcher<_MyRouteState>());
+      context.rootAncestorStateOfType(const TypeMatcher<_AppRoutesState>());
 
-  const MyRoute(this._sourceFile);
+  const AppRoutes(this._sourceFile);
 
   // Subclasses can return routeName accordingly (polymorphism).
   String get routeName => '/${this.runtimeType.toString()}';
@@ -34,7 +35,7 @@ abstract class MyRoute extends StatefulWidget {
   Widget buildMyRouteContent(BuildContext context);
 
   @override
-  State<StatefulWidget> createState() => _MyRouteState();
+  State<StatefulWidget> createState() => _AppRoutesState();
 }
 
 // Each MyRoute contains two tabs: "Preview" and "Code".
@@ -84,7 +85,8 @@ const _TABS = <Widget>[
   ),
 ];
 
-class _MyRouteState extends State<MyRoute> with SingleTickerProviderStateMixin {
+class _AppRoutesState extends State<AppRoutes>
+    with SingleTickerProviderStateMixin {
   TabController _tabController;
   SharedPreferences _preferences;
 
@@ -121,14 +123,10 @@ class _MyRouteState extends State<MyRoute> with SingleTickerProviderStateMixin {
       // --- Tab Contents ---------------------------------------------------------------------------------------------
       body: Builder(builder: (BuildContext context) {
         final myTabPages = <Widget>[
-          // "Preview" tab:
+          // "Menu Tabs" tab:
           AlwaysAliveWidget(child: this.widget.buildMyRouteContent(context)),
-          // "Code" tab:
-          AlwaysAliveWidget(
-              //child: Remotes(filePath: this.widget._sourceFile)),
-              child: Remotes()),
-          AlwaysAliveWidget(
-              child: JobStatus()),
+          AlwaysAliveWidget(child: ScheduleJobs()),
+          AlwaysAliveWidget(child: JobStatus()),
         ];
         assert(myTabPages.length == _TABS.length);
         // Body of MyRoute is two-tabs ("Preview" and "Code").
@@ -140,15 +138,15 @@ class _MyRouteState extends State<MyRoute> with SingleTickerProviderStateMixin {
       // Only home route has drawer:
       drawer: this.widget.routeName == Navigator.defaultRouteName
           ? Drawer(
-        child: my_app_meta.getNavDrawerItems(this, context),
-      )
+              child: my_app_meta.getNavDrawerItems(this, context),
+            )
           : null,
     );
   }
 
   // Returns a widget showing the star status of one demo route: a star icon
   // with counts.
-  Widget starStatusOfRoute(MyRoute route) {
+  Widget starStatusOfRoute(AppRoutes route) {
     return IconButton(
       tooltip: 'Bookmark',
       icon: Icon(

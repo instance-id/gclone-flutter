@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../get_data.dart';
+
 import '../get_version.dart';
 import '../route.dart';
 
-class DisplayVersion extends MyRoute {
+class DisplayVersion extends AppRoutes {
   const DisplayVersion([String sourceFile = 'lib/routes/version_route.dart'])
       : super(sourceFile);
 
@@ -18,14 +18,13 @@ class DisplayVersion extends MyRoute {
   Widget buildMyRouteContent(BuildContext context) {
     return Scaffold(
         appBar: AppBar(),
-        body:     FutureBuilder<String>(
+        body: FutureBuilder<String>(
             future: GetVersionPlugin.version,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return Container();
               }
               return Text(snapshot.data);
-            }
-        ));
+            }));
   }
 }

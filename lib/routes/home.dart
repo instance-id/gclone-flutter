@@ -1,182 +1,255 @@
+import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
+import 'package:gclone/animations/slide_in.dart';
 import 'package:gclone/get_data.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../get_version.dart';
+import 'package:gclone/models/lesson.dart';
+
+import '../DetailPage.dart';
+import '../icons.dart';
 import '../route.dart';
-import '../app_meta.dart'
-    show
-    BookmarkManager,
-    kAboutRoute,
-    kMyAppRoutesStructure,
-    kRoutenameToRouteMap,
-    kSharedPreferences,
-    MyRouteGroup;
 
+const appTitle = "gclone";
+bool startCompleted = false;
 
-class HomeRoute extends MyRoute {
+class HomeRoute extends AppRoutes {
   const HomeRoute([String sourceFile = 'lib/routes/home.dart'])
       : super(sourceFile);
 
   @override
-  get title => 'Gclone';
+  get title => 'Gclone_home_2';
 
   @override
   get routeName => Navigator.defaultRouteName;
 
   @override
   Widget buildMyRouteContent(BuildContext context) {
-    return HomePage();
+    return HomePage2();
   }
 }
 
-class HomePage extends StatefulWidget {
+class HomePage2 extends StatefulWidget {
   @override
-  _HomePageState createState() => _HomePageState();
+  _HomePageState2 createState() => _HomePageState2();
 }
 
-class _ListItem {
-  _ListItem(this.value, this.checked);
-  final String value;
-  bool checked;
+class MyItem {
+  MyItem(this.key, this.icon, this.title);
+
+  final String key;
+  final IconData icon;
+  final String title;
+
+  bool operator ==(o) => o is MyItem && o.key == key;
+  int get hashCode => key.hashCode;
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState2 extends State<HomePage2>
+    with AfterLayoutMixin<HomePage2> {
   GetDataPlugin getdataPlugin = GetDataPlugin();
-  List remotes =[];
+  List remotes = [];
+  List lessons;
+  List<MyItem> _remotesList;
+  var renderBuilder = true;
 
-  SharedPreferences _preferences;
-  bool _isRow = true;
-  MainAxisSize _mainAxisSize = MainAxisSize.max;
-  MainAxisAlignment _mainAxisAlignment = MainAxisAlignment.start;
-  CrossAxisAlignment _crossAxisAlignment = CrossAxisAlignment.start;
-
+  // --- Init State -------------------------------------------------------------------------------
   @override
   void initState() {
-    super.initState();
-    kSharedPreferences
-      ..then((prefs) => setState(() => this._preferences = prefs));
-
-    getdataPlugin.remotesGetData().then((data){
+    lessons = getLessons();
+    _remotesList = [];
+    getdataPlugin.remotesGetData().then((data) {
       setState(() {
-      remotes = data;
+        remotes = data;
       });
+      for (int i = 0; i < remotes.length; i++) {
+        _remotesList.add(MyItem(i.toString(), randomIcons[i], remotes[i]));
+      }
     });
+    super.initState();
   }
 
-  // Loads boolean preference into this._numberPref.
-  void _loadBooleanPref() {
-    setState(() {
-      this._boolPref = this._preferences.getBool(kDemoBooleanPrefKey) ?? false;
-    });
-  }
-
-  Future<Null> _setBooleanPref(bool val) async {
-    await this._preferences.setBool(kDemoBooleanPrefKey, val);
-    _loadBooleanPref();
-  }
-  static const String kDemoBooleanPrefKey = 'demo_boolean_pref';
-  bool _boolPref = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final _appbarButtons = _getBottomBar();
-    return Scaffold(
-      body: _buildBody(),
-      bottomNavigationBar: _appbarButtons,
+  Widget _buildOptions(MyItem item) {
+    return PopupMenuButton(
+      itemBuilder: (BuildContext context) {
+        return [
+          new PopupMenuItem(child: new Text("edit"), value: "edit"),
+          new PopupMenuItem(child: new Text("delete"), value: "delete"),
+        ];
+      },
+      onSelected: (selected) async {
+        await showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return SimpleDialog(
+                title: Text(selected),
+                contentPadding: EdgeInsets.all(25.0),
+                children: <Widget>[
+                  Text("Item [${item.title}], Operation [$selected].")
+                ],
+              );
+            });
+      },
     );
   }
 
-  bool _reverseSort = false;
-
-  // Handler called by ReorderableListView onReorder after a list child is
-  // dropped into a new position.
-  void _onReorder(int oldIndex, int newIndex) {
-    setState(() {
-      if (newIndex > oldIndex) {
-        newIndex = -1;
-      }
-      final _ListItem item = remotes.removeAt(oldIndex);
-      remotes.insert(newIndex, item);
-    });
-  }
-
-  // Handler called when the "sort" button on appbar is clicked.
-//  void _onSort() {
-//    setState(() {
-//      _reverseSort = !_reverseSort;
-//      remotes.sort((_ListItem a, _ListItem b) => _reverseSort
-//          ? b.value.compareTo(a.value)
-//          : a.value.compareTo(b.value));
-//    });
-//  }
-
-  Widget _buildBody() {
-    return FutureBuilder<List<dynamic>>(
-        future: GetDataPlugin.remotesGet,
-        builder:  (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot){
-          if (!snapshot.hasData) {
-            return Container();
-          }
-          var _items = snapshot.data.map((item) =>
-                                              _ListItem(item, false)).toList();
-          return ReorderableListView(
-            padding:new EdgeInsets.symmetric(vertical: 16.0),
-            onReorder: _onReorder,
-            children: _items
-              .map((item) =>
-              CheckboxListTile(
-            key: Key(item.value),
-            value: item.checked ?? false,
-            onChanged: (bool newValue) {
-              setState(() => item.checked = newValue);
-            },
-            title: Text('${item.value}'),
-            isThreeLine: true,
-            subtitle: Text('${item.value}, checked=${item.checked}'),
-            secondary: Icon(Icons.drag_handle),
-
+  @override
+  Widget build(BuildContext context) {
+    ListTile _buildListTile(MyItem item, Lesson lesson) => ListTile(
+          contentPadding:
+              EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+          leading: Container(
+            padding: EdgeInsets.only(right: 12.0),
+            decoration: new BoxDecoration(
+                border: new Border(
+                    right: new BorderSide(width: 1.0, color: Colors.white24))),
+            child: Icon(item.icon),
           ),
-          ).toList());
-          });
+          title: Text(item.title),
+          subtitle: Row(
+            children: <Widget>[
+              Expanded(
+                  flex: 1,
+                  child: Container(
+                    // tag: 'hero',
+                    child: LinearProgressIndicator(
+                        backgroundColor: Color.fromRGBO(209, 224, 224, 0.2),
+                        value: lesson.indicatorValue,
+                        valueColor: AlwaysStoppedAnimation(Colors.green)),
+                  )),
+              Expanded(
+                flex: 4,
+                child: Padding(
+                    padding: EdgeInsets.only(left: 10.0),
+                    child: Text(lesson.level,
+                        style: TextStyle(color: Colors.white))),
+              )
+            ],
+          ),
+          trailing: _buildOptions(item),
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => DetailPage(lesson: lesson)));
+          },
+        );
 
-  }
-
-  // --- Bottom buttons ----------------------------------------------------------------------------------------------------
-
-  Widget _getBottomBar() {
-    return Material(
-      color: Theme.of(context).primaryColor,
-      //child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-        //Row(
-        child: ButtonBar(
-          children: <Widget>[
-            Row(
-              children: <Widget>[
-                RaisedButton(
-                  child: Text('New'),
-                  onPressed: () => this._setBooleanPref(!this._boolPref),
-                ),
-              ],
-            ),
-            Row(
-              children: <Widget>[
-                RaisedButton(
-                  child: Text('Edit'),
-                  onPressed: () => this._setBooleanPref(!this._boolPref),
-                ),
-              ],
-            ),
-            Row(
-              children: <Widget>[
-                RaisedButton(
-                  child: Text('Delete'),
-                  onPressed: () => this._setBooleanPref(!this._boolPref),
-                ),
-              ],
-            ),
-          ],
+    Card makeCard(BuildContext context, MyItem item, Lesson lesson) => Card(
+        key: Key(item.key),
+        elevation: 8.0,
+        margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+        child: Container(
+          //decoration: BoxDecoration(color: Color.fromRGBO(64, 75, 96, .9)),
+          child: _buildListTile(item, lesson),
         ));
-    //  ]),
-  //  );
+
+    buildChildren(bool startCompleted) {
+      if (!setupComplete) {
+        return _remotesList
+            .map((MyItem item) => SlideFadeIn(
+                  Key(item.key),
+                  (double.parse(item.key) * 0.3) + 0.5,
+                  makeCard(context, item, lessons[int.parse(item.key)]),
+                ))
+            .toList();
+      } else {
+        return _remotesList
+            .map(
+              (MyItem item) =>
+                  makeCard(context, item, lessons[int.parse(item.key)]),
+            )
+            .toList();
+      }
+    }
+
+    final makeBody = Container(
+        // decoration: BoxDecoration(color: Color.fromRGBO(58, 66, 86, 1.0)),
+        child: ReorderableListView(
+            padding: EdgeInsets.only(top: 20.0),
+            children: buildChildren(startCompleted),
+            onReorder: (oldIndex, newIndex) {
+              setState(() {
+                // These two lines are workarounds for ReorderableListView problems
+                if (newIndex > _remotesList.length)
+                  newIndex = _remotesList.length;
+                if (oldIndex < newIndex) newIndex--;
+
+                MyItem item = _remotesList[oldIndex];
+                _remotesList.remove(item);
+                _remotesList.insert(newIndex, item);
+              });
+            }));
+
+    final makeBottom = Container(
+      height: 55.0,
+      child: BottomAppBar(
+        color: Color.fromRGBO(33, 33, 33, 1.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            IconButton(
+              icon: Icon(Icons.home, color: Colors.white),
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: Icon(Icons.blur_on, color: Colors.white),
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: Icon(Icons.hotel, color: Colors.white),
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: Icon(Icons.account_box, color: Colors.white),
+              onPressed: () {},
+            )
+          ],
+        ),
+      ),
+    );
+
+    return Scaffold(
+      //backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
+      body: makeBody,
+      bottomNavigationBar: makeBottom,
+    );
   }
+
+  @override
+  void afterFirstLayout(BuildContext context) {
+    // Calling the same function "after layout" to resolve the issue.
+    //setupComplete = true;
+  }
+}
+
+List getLessons() {
+  return [
+    Lesson(
+        title: "Google Drive",
+        level: "Last run: Successful",
+        indicatorValue: 1,
+        price: 20,
+        content:
+            "Start by taking a couple of minutes to read the info in this section. Launch your app and click on the Settings menu.  While on the settings page, click the Save button.  You should see a circular progress indicator display in the middle of the page and the user interface elements cannot be clicked due to the modal barrier that is constructed."),
+    Lesson(
+        title: "Google Cloud",
+        level: "Backup in progress",
+        indicatorValue: 0.75,
+        price: 50,
+        content:
+            "Start by taking a couple of minutes to read the info in this section. Launch your app and click on the Settings menu.  While on the settings page, click the Save button.  You should see a circular progress indicator display in the middle of the page and the user interface elements cannot be clicked due to the modal barrier that is constructed."),
+    Lesson(
+        title: "Secure FTP",
+        level: "Last run: Error",
+        indicatorValue: 0,
+        price: 30,
+        content:
+            "Start by taking a couple of minutes to read the info in this section. Launch your app and click on the Settings menu.  While on the settings page, click the Save button.  You should see a circular progress indicator display in the middle of the page and the user interface elements cannot be clicked due to the modal barrier that is constructed."),
+    Lesson(
+        title: "Local Storage (USB)",
+        level: "Last run: Successful",
+        indicatorValue: 1.0,
+        price: 50,
+        content:
+            "Start by taking a couple of minutes to read the info in this section. Launch your app and click on the Settings menu.  While on the settings page, click the Save button.  You should see a circular progress indicator display in the middle of the page and the user interface elements cannot be clicked due to the modal barrier that is constructed."),
+  ];
 }

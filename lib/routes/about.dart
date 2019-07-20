@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
-import '../route.dart';
+
 import '../app_meta.dart';
+import '../route.dart';
 
 // Inspired by the about page in Eajy's flutter demo:
 // https://github.com/Eajy/flutter_demo/blob/master/lib/route/about.dart
-class AboutRoute extends MyRoute {
+class AboutRoute extends AppRoutes {
   const AboutRoute([String sourceFile = 'lib/routes/about.dart'])
       : super(sourceFile);
 

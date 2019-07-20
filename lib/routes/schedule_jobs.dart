@@ -1,24 +1,15 @@
 import 'dart:math';
 
-import 'package:animated_floatactionbuttons/animated_floatactionbuttons.dart';
-import 'package:clipboard_manager/clipboard_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:gclone/route.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
-import '../app_meta.dart' show GITHUB_URL;
+
 import '../get_data.dart';
 import '../get_version.dart';
 
-class Remotes extends StatefulWidget {
-  //final String filePath;
-  //const Remotes({Key key, this.filePath}) : super(key: key);
-
-  //String get githubPath => '$GITHUB_URL/blob/master/${this.filePath}';
-
+class ScheduleJobs extends StatefulWidget {
   @override
-  RemotesState createState() {
-    return RemotesState();
+  ScheduleJobsState createState() {
+    return ScheduleJobsState();
   }
 }
 
@@ -42,7 +33,7 @@ FutureBuilder<String> getVersion() => new FutureBuilder<String>(
       return Text(snapshot.data);
     });
 
-class RemotesState extends State<Remotes> {
+class ScheduleJobsState extends State<ScheduleJobs> {
   double _textScaleFactor = 1.0;
 
   List<Widget> _buildFloatingButtons() {
@@ -84,26 +75,27 @@ class RemotesState extends State<Remotes> {
 //    );
 
     return Scaffold(
-        appBar: AppBar(),
-        body: FutureBuilder<List<dynamic>>(
-            future: GetDataPlugin.remotesGet,
-            builder:
-                (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
-              if (!snapshot.hasData) {
-                return Container();
-              }
-              return ListView.builder(
-                itemCount: snapshot.data.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Column(
-                    children: <Widget>[
-                      ListTile(
-                        title: Text(snapshot.data[index].toString()),
-                      )
-                    ],
-                  );
-                },
-              );
-            }));
+      appBar: AppBar(),
+      body: FutureBuilder<List<dynamic>>(
+          future: GetDataPlugin.remotesGet,
+          builder:
+              (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+            if (!snapshot.hasData) {
+              return Container();
+            }
+            return ListView.builder(
+              itemCount: snapshot.data.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Column(
+                  children: <Widget>[
+                    ListTile(
+                      title: Text(snapshot.data[index].toString()),
+                    )
+                  ],
+                );
+              },
+            );
+          }),
+    );
   }
 }
