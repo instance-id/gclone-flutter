@@ -21,6 +21,8 @@ class gclone extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      showPerformanceOverlay: false,
+      debugShowMaterialGrid: true,
       title: 'gclone',
       theme: ThemeData(
         primarySwatch: MaterialColor(4280361249, {

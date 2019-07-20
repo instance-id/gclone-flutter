@@ -7,19 +7,19 @@ import 'package:gclone/routes/schedule_jobs.dart';
 enum NavPages { Remotes, ScheduledJobs, JobStatus }
 
 class NavigationProvider with ChangeNotifier {
-  var currentNavigation = NavPages.Remotes;
+  int currentNavigation = 1;
 
   Widget get getNavigation {
-    if (currentNavigation == NavPages.ScheduledJobs) {
+    if (currentNavigation == 1) {
       return ScheduleJobs();
-    } else if (currentNavigation == NavPages.JobStatus) {
+    } else if (currentNavigation == 2) {
       return JobStatus();
     } else {
       return Remotes();
     }
   }
 
-  void updateNavigation(var navigation) {
+  void updateNavigation(int navigation) {
     currentNavigation = navigation;
     notifyListeners();
   }

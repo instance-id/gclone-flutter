@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:vector_math/vector_math.dart' as vector;
+import 'package:gclone/animations/slide_in.dart';
+import 'package:gclone/get_data.dart';
+import 'package:gclone/helpers/icons.dart';
+import 'package:gclone/models/lesson.dart';
+import 'package:gclone/provider/navigation_provider.dart';
+import 'package:provider/provider.dart';
 
-import '../helpers/tab_item.dart';
+import '../DetailPage.dart';
+
+const appTitle = "gclone";
+bool startCompleted = false;
 
 class JobStatus extends StatefulWidget {
   @override
@@ -9,231 +17,194 @@ class JobStatus extends StatefulWidget {
 }
 
 class _JobStatusState extends State<JobStatus> with TickerProviderStateMixin {
-  AnimationController _animationController;
-  Tween<double> _positionTween;
-  Animation<double> _positionAnimation;
+  GetDataPlugin getdataPlugin = GetDataPlugin();
+  List remotes = [];
+  List lessons;
+  List<MyItem> _remotesList;
+  var renderBuilder = true;
 
-  AnimationController _fadeOutController;
-  Animation<double> _fadeFabOutAnimation;
-  Animation<double> _fadeFabInAnimation;
-
-  double fabIconAlpha = 1;
-  IconData nextIcon = Icons.search;
-  IconData activeIcon = Icons.search;
-
-  int currentSelected = 1;
-
+  // --- Init State -------------------------------------------------------------------------------
   @override
   void initState() {
+    lessons = getLessons();
+    _remotesList = [];
+    getdataPlugin.remotesGetData().then((data) {
+      setState(() {
+        remotes = data;
+      });
+      for (int i = 0; i < remotes.length; i++) {
+        _remotesList.add(MyItem(i.toString(), randomIcons[i], remotes[i]));
+      }
+    });
     super.initState();
+  }
 
-    _animationController = AnimationController(
-        vsync: this, duration: Duration(milliseconds: ANIM_DURATION));
-    _fadeOutController = AnimationController(
-        vsync: this, duration: Duration(milliseconds: (ANIM_DURATION ~/ 5)));
-
-    _positionTween = Tween<double>(begin: 0, end: 0);
-    _positionAnimation = _positionTween.animate(
-        CurvedAnimation(parent: _animationController, curve: Curves.easeOut))
-      ..addListener(() {
-        setState(() {});
-      });
-
-    _fadeFabOutAnimation = Tween<double>(begin: 1, end: 0).animate(
-        CurvedAnimation(parent: _fadeOutController, curve: Curves.easeOut))
-      ..addListener(() {
-        setState(() {
-          fabIconAlpha = _fadeFabOutAnimation.value;
-        });
-      })
-      ..addStatusListener((AnimationStatus status) {
-        if (status == AnimationStatus.completed) {
-          setState(() {
-            activeIcon = nextIcon;
-          });
-        }
-      });
-
-    _fadeFabInAnimation = Tween<double>(begin: 0, end: 1).animate(
-        CurvedAnimation(
-            parent: _animationController,
-            curve: Interval(0.8, 1, curve: Curves.easeOut)))
-      ..addListener(() {
-        setState(() {
-          fabIconAlpha = _fadeFabInAnimation.value;
-        });
-      });
+  Widget _buildOptions(MyItem item) {
+    return PopupMenuButton(
+      itemBuilder: (BuildContext context) {
+        return [
+          new PopupMenuItem(child: new Text("edit"), value: "edit"),
+          new PopupMenuItem(child: new Text("delete"), value: "delete"),
+        ];
+      },
+      onSelected: (selected) async {
+        await showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return SimpleDialog(
+                title: Text(selected),
+                contentPadding: EdgeInsets.all(25.0),
+                children: <Widget>[
+                  Text("Item [${item.title}], Operation [$selected].")
+                ],
+              );
+            });
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.topCenter,
-      children: <Widget>[
-        Container(
-          height: 65,
-          margin: EdgeInsets.only(top: 45),
-          decoration: BoxDecoration(color: Colors.white, boxShadow: [
-            BoxShadow(
-                color: Colors.black12, offset: Offset(0, -1), blurRadius: 8)
-          ]),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.center,
+    ListTile _buildListTile(MyItem item, Lesson lesson) => ListTile(
+          contentPadding:
+              EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+          leading: Container(
+            padding: EdgeInsets.only(right: 12.0),
+            decoration: new BoxDecoration(
+                border: new Border(
+                    right: new BorderSide(width: 1.0, color: Colors.white24))),
+            child: Icon(item.icon),
+          ),
+          title: Text(item.title),
+          subtitle: Row(
             children: <Widget>[
-              TabItem(
-                  selected: currentSelected == 0,
-                  iconData: Icons.home,
-                  title: "HOME",
-                  callbackFunction: () {
-                    setState(() {
-                      nextIcon = Icons.home;
-                      currentSelected = 0;
-                    });
-                    _initAnimationAndStart(_positionAnimation.value, -1);
-                  }),
-              TabItem(
-                  selected: currentSelected == 1,
-                  iconData: Icons.search,
-                  title: "SEARCH",
-                  callbackFunction: () {
-                    setState(() {
-                      nextIcon = Icons.search;
-                      currentSelected = 1;
-                    });
-                    _initAnimationAndStart(_positionAnimation.value, 0);
-                  }),
-              TabItem(
-                  selected: currentSelected == 2,
-                  iconData: Icons.person,
-                  title: "USER",
-                  callbackFunction: () {
-                    setState(() {
-                      nextIcon = Icons.person;
-                      currentSelected = 2;
-                    });
-                    _initAnimationAndStart(_positionAnimation.value, 1);
-                  })
+              Expanded(
+                  flex: 1,
+                  child: Container(
+                    // tag: 'hero',
+                    child: LinearProgressIndicator(
+                        backgroundColor: Color.fromRGBO(209, 224, 224, 0.2),
+                        value: lesson.indicatorValue,
+                        valueColor: AlwaysStoppedAnimation(Colors.green)),
+                  )),
+              Expanded(
+                flex: 4,
+                child: Padding(
+                    padding: EdgeInsets.only(left: 10.0),
+                    child: Text(lesson.level,
+                        style: TextStyle(color: Colors.white))),
+              )
             ],
           ),
-        ),
-        IgnorePointer(
-          child: Container(
-            decoration: BoxDecoration(color: Colors.transparent),
-            child: Align(
-              heightFactor: 1,
-              alignment: Alignment(_positionAnimation.value, 0),
-              child: FractionallySizedBox(
-                widthFactor: 1 / 3,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: <Widget>[
-                    SizedBox(
-                      height: 90,
-                      width: 90,
-                      child: ClipRect(
-                          clipper: HalfClipper(),
-                          child: Container(
-                            child: Center(
-                              child: Container(
-                                  width: 70,
-                                  height: 70,
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      shape: BoxShape.circle,
-                                      boxShadow: [
-                                        BoxShadow(
-                                            color: Colors.black12,
-                                            blurRadius: 8)
-                                      ])),
-                            ),
-                          )),
-                    ),
-                    SizedBox(
-                        height: 70,
-                        width: 90,
-                        child: CustomPaint(
-                          painter: HalfPainter(),
-                        )),
-                    SizedBox(
-                      height: 60,
-                      width: 60,
-                      child: Container(
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: PURPLE,
-                            border: Border.all(
-                                color: Colors.white,
-                                width: 5,
-                                style: BorderStyle.none)),
-                        child: Padding(
-                          padding: const EdgeInsets.all(0.0),
-                          child: Opacity(
-                            opacity: fabIconAlpha,
-                            child: Icon(
-                              activeIcon,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
+          trailing: _buildOptions(item),
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => DetailPage(lesson: lesson)));
+          },
+        );
+
+    Card makeCard(BuildContext context, MyItem item, Lesson lesson) => Card(
+        key: Key(item.key),
+        elevation: 8.0,
+        margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+        child: Container(
+          //decoration: BoxDecoration(color: Color.fromRGBO(64, 75, 96, .9)),
+          child: _buildListTile(item, lesson),
+        ));
+
+    buildChildren(bool startCompleted) {
+      if (!setupComplete) {
+        return _remotesList
+            .map((MyItem item) => SlideFadeIn(
+                  Key(item.key),
+                  (double.parse(item.key) * 0.3) + 0.5,
+                  makeCard(context, item, lessons[int.parse(item.key)]),
+                ))
+            .toList();
+      } else {
+        return _remotesList
+            .map(
+              (MyItem item) =>
+                  makeCard(context, item, lessons[int.parse(item.key)]),
+            )
+            .toList();
+      }
+    }
+
+    final makeBody = Container(
+        // decoration: BoxDecoration(color: Color.fromRGBO(58, 66, 86, 1.0)),
+        child: ReorderableListView(
+            padding: EdgeInsets.only(top: 20.0),
+            children: buildChildren(startCompleted),
+            onReorder: (oldIndex, newIndex) {
+              setState(() {
+                // These two lines are workarounds for ReorderableListView problems
+                if (newIndex > _remotesList.length)
+                  newIndex = _remotesList.length;
+                if (oldIndex < newIndex) newIndex--;
+
+                MyItem item = _remotesList[oldIndex];
+                _remotesList.remove(item);
+                _remotesList.insert(newIndex, item);
+              });
+            }));
+
+    return Scaffold(
+      //backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
+      body: makeBody,
+      //bottomNavigationBar: makeBottom,
     );
   }
 
-  _initAnimationAndStart(double from, double to) {
-    _positionTween.begin = from;
-    _positionTween.end = to;
-
-    _animationController.reset();
-    _fadeOutController.reset();
-    _animationController.forward();
-    _fadeOutController.forward();
+  @override
+  void afterFirstLayout(BuildContext context) {
+    // Calling the same function "after layout" to resolve the issue.
+    //setupComplete = true;
   }
 }
 
-class HalfClipper extends CustomClipper<Rect> {
-  @override
-  Rect getClip(Size size) {
-    final rect = Rect.fromLTWH(0, 0, size.width, size.height / 2);
-    return rect;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Rect> oldClipper) {
-    return true;
-  }
+List getLessons() {
+  return [
+    Lesson(
+        title: "Google Drive",
+        level: "Last run: Successful",
+        indicatorValue: 1,
+        price: 20,
+        content:
+            "Start by taking a couple of minutes to read the info in this section. Launch your app and click on the Settings menu.  While on the settings page, click the Save button.  You should see a circular progress indicator display in the middle of the page and the user interface elements cannot be clicked due to the modal barrier that is constructed."),
+    Lesson(
+        title: "Google Cloud",
+        level: "Backup in progress",
+        indicatorValue: 0.75,
+        price: 50,
+        content:
+            "Start by taking a couple of minutes to read the info in this section. Launch your app and click on the Settings menu.  While on the settings page, click the Save button.  You should see a circular progress indicator display in the middle of the page and the user interface elements cannot be clicked due to the modal barrier that is constructed."),
+    Lesson(
+        title: "Secure FTP",
+        level: "Last run: Error",
+        indicatorValue: 0,
+        price: 30,
+        content:
+            "Start by taking a couple of minutes to read the info in this section. Launch your app and click on the Settings menu.  While on the settings page, click the Save button.  You should see a circular progress indicator display in the middle of the page and the user interface elements cannot be clicked due to the modal barrier that is constructed."),
+    Lesson(
+        title: "Local Storage (USB)",
+        level: "Last run: Successful",
+        indicatorValue: 1.0,
+        price: 50,
+        content:
+            "Start by taking a couple of minutes to read the info in this section. Launch your app and click on the Settings menu.  While on the settings page, click the Save button.  You should see a circular progress indicator display in the middle of the page and the user interface elements cannot be clicked due to the modal barrier that is constructed."),
+  ];
 }
 
-class HalfPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final Rect beforeRect = Rect.fromLTWH(0, (size.height / 2) - 10, 10, 10);
-    final Rect largeRect = Rect.fromLTWH(10, 0, size.width - 20, 70);
-    final Rect afterRect =
-        Rect.fromLTWH(size.width - 10, (size.height / 2) - 10, 10, 10);
+class MyItem {
+  MyItem(this.key, this.icon, this.title);
 
-    final path = Path();
-    path.arcTo(beforeRect, vector.radians(0), vector.radians(90), false);
-    path.lineTo(20, size.height / 2);
-    path.arcTo(largeRect, vector.radians(0), -vector.radians(180), false);
-    path.moveTo(size.width - 10, size.height / 2);
-    path.lineTo(size.width - 10, (size.height / 2) - 10);
-    path.arcTo(afterRect, vector.radians(180), vector.radians(-90), false);
-    path.close();
+  final String key;
+  final IconData icon;
+  final String title;
 
-    canvas.drawPath(path, Paint()..color = Colors.white);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return true;
-  }
+  bool operator ==(o) => o is MyItem && o.key == key;
+  int get hashCode => key.hashCode;
 }

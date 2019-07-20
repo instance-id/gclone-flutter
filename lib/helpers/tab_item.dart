@@ -7,10 +7,10 @@ class TabItem extends StatefulWidget {
       @required this.title,
       @required this.callbackFunction});
 
-  String title;
-  IconData iconData;
-  bool selected;
-  Function callbackFunction;
+  final String title;
+  final IconData iconData;
+  final bool selected;
+  final Function callbackFunction;
 
   @override
   _TabItemState createState() => _TabItemState();
@@ -23,11 +23,9 @@ const double TEXT_ON = 1;
 const double ALPHA_OFF = 0;
 const double ALPHA_ON = 1;
 const int ANIM_DURATION = 300;
-const Color PURPLE = Color(0xFF8c77ec);
-
+const Color PURPLE = Color(0xaaffffff);
 
 class _TabItemState extends State<TabItem> {
-
   double iconYAlign = ICON_ON;
   double textYAlign = TEXT_OFF;
   double iconAlpha = ALPHA_ON;
@@ -68,7 +66,8 @@ class _TabItemState extends State<TabItem> {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     widget.title,
-                    style: TextStyle(fontWeight: FontWeight.w600),
+                    style: TextStyle(
+                        fontWeight: FontWeight.w600, color: Color(0xff74915d)),
                   ),
                 )),
           ),

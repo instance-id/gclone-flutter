@@ -30,8 +30,7 @@ dependencies:
   shared_preferences: ^0.5.3+4
   url_launcher: ^5.1.0
   font_awesome_flutter: ^8.5.0
-  flutter_reorderable_list:
-    path: ../../knopp/flutter_reorderable_list
+
 
 
 

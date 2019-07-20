@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'models/lesson.dart';
 
 class DetailPage extends StatelessWidget {
@@ -20,9 +21,9 @@ class DetailPage extends StatelessWidget {
       children: <Widget>[
         SizedBox(height: 60.0),
         Icon(
-          Icons.directions_car,
+          lesson.icon,
           color: Colors.white,
-          size: 40.0,
+          size: 120.0,
         ),
         Container(
           width: 90.0,
@@ -94,8 +95,8 @@ class DetailPage extends StatelessWidget {
         child: RaisedButton(
           onPressed: () => {},
           //color: Color.fromRGBO(58, 66, 86, 1.0),
-          child:
-          Text("Configure this provider", style: TextStyle(color: Colors.white)),
+          child: Text("Configure this provider",
+              style: TextStyle(color: Colors.white)),
         ));
     final bottomContent = Container(
       // height: MediaQuery.of(context).size.height,

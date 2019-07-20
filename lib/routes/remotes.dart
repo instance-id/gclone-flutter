@@ -1,11 +1,9 @@
-import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:gclone/animations/slide_in.dart';
 import 'package:gclone/get_data.dart';
 import 'package:gclone/helpers/icons.dart';
+import 'package:gclone/helpers/icons_helper.dart';
 import 'package:gclone/models/lesson.dart';
-import 'package:gclone/provider/navigation_provider.dart';
-import 'package:provider/provider.dart';
 
 import '../DetailPage.dart';
 
@@ -17,7 +15,7 @@ class Remotes extends StatefulWidget {
   _RemotesState createState() => _RemotesState();
 }
 
-class _RemotesState extends State<Remotes> with AfterLayoutMixin<Remotes> {
+class _RemotesState extends State<Remotes> with TickerProviderStateMixin {
   GetDataPlugin getdataPlugin = GetDataPlugin();
   List remotes = [];
   List lessons;
@@ -33,8 +31,14 @@ class _RemotesState extends State<Remotes> with AfterLayoutMixin<Remotes> {
       setState(() {
         remotes = data;
       });
+      var icon;
       for (int i = 0; i < remotes.length; i++) {
-        _remotesList.add(MyItem(i.toString(), randomIcons[i], remotes[i]));
+        if (remotes[i] == "brbackup") {
+          icon = getFontAwesomeIcon(name: "googleDrive");
+        } else {
+          icon = randomIcons[i];
+        }
+        _remotesList.add(MyItem(i.toString(), icon, remotes[i]));
       }
     });
     super.initState();
@@ -66,7 +70,7 @@ class _RemotesState extends State<Remotes> with AfterLayoutMixin<Remotes> {
 
   @override
   Widget build(BuildContext context) {
-    final navigation = Provider.of<NavigationProvider>(context);
+    //final navigation = Provider.of<NavigationProvider>(context);
     ListTile _buildListTile(MyItem item, Lesson lesson) => ListTile(
           contentPadding:
               EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
@@ -159,18 +163,13 @@ class _RemotesState extends State<Remotes> with AfterLayoutMixin<Remotes> {
       //bottomNavigationBar: makeBottom,
     );
   }
-
-  @override
-  void afterFirstLayout(BuildContext context) {
-    // Calling the same function "after layout" to resolve the issue.
-    //setupComplete = true;
-  }
 }
 
 List getLessons() {
   return [
     Lesson(
         title: "Google Drive",
+        icon: getFontAwesomeIcon(name: "googleDrive"),
         level: "Last run: Successful",
         indicatorValue: 1,
         price: 20,
