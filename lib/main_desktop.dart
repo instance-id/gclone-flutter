@@ -1,9 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gclone/provider/navigation_provider.dart';
+import 'package:provider/provider.dart';
 
-import './app_meta.dart' as my_app_meta;
-
+import 'app_home.dart';
 // The client and host sides of a channel are connected through
 // a channel name passed in the channel constructor.
 
@@ -11,7 +12,15 @@ void main() {
   debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
 
   runApp(
-    MaterialApp(
+    gclone(),
+  );
+}
+
+// ignore: camel_case_types
+class gclone extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
       title: 'gclone',
       theme: ThemeData(
         primarySwatch: MaterialColor(4280361249, {
@@ -488,9 +497,10 @@ void main() {
           borderRadius: BorderRadius.all(Radius.circular(0.0)),
         )),
       ),
-      // No need to set `home` because `routes` is set to a routing table, and
-      // Navigator.defaultRouteName ('/') has an entry in it.
-      routes: my_app_meta.kRoutingTable,
-    ),
-  );
+      home: ChangeNotifierProvider<NavigationProvider>(
+        builder: (_) => NavigationProvider(),
+        child: AppHome(),
+      ),
+    );
+  }
 }

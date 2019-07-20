@@ -2,49 +2,22 @@ import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:gclone/animations/slide_in.dart';
 import 'package:gclone/get_data.dart';
+import 'package:gclone/helpers/icons.dart';
 import 'package:gclone/models/lesson.dart';
+import 'package:gclone/provider/navigation_provider.dart';
+import 'package:provider/provider.dart';
 
 import '../DetailPage.dart';
-import '../icons.dart';
-import '../route.dart';
 
 const appTitle = "gclone";
 bool startCompleted = false;
 
-class HomeRoute extends AppRoutes {
-  const HomeRoute([String sourceFile = 'lib/routes/home.dart'])
-      : super(sourceFile);
-
+class Remotes extends StatefulWidget {
   @override
-  get title => 'Gclone_home_2';
-
-  @override
-  get routeName => Navigator.defaultRouteName;
-
-  @override
-  Widget buildMyRouteContent(BuildContext context) {
-    return HomePage2();
-  }
+  _RemotesState createState() => _RemotesState();
 }
 
-class HomePage2 extends StatefulWidget {
-  @override
-  _HomePageState2 createState() => _HomePageState2();
-}
-
-class MyItem {
-  MyItem(this.key, this.icon, this.title);
-
-  final String key;
-  final IconData icon;
-  final String title;
-
-  bool operator ==(o) => o is MyItem && o.key == key;
-  int get hashCode => key.hashCode;
-}
-
-class _HomePageState2 extends State<HomePage2>
-    with AfterLayoutMixin<HomePage2> {
+class _RemotesState extends State<Remotes> with AfterLayoutMixin<Remotes> {
   GetDataPlugin getdataPlugin = GetDataPlugin();
   List remotes = [];
   List lessons;
@@ -93,6 +66,7 @@ class _HomePageState2 extends State<HomePage2>
 
   @override
   Widget build(BuildContext context) {
+    final navigation = Provider.of<NavigationProvider>(context);
     ListTile _buildListTile(MyItem item, Lesson lesson) => ListTile(
           contentPadding:
               EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
@@ -179,38 +153,10 @@ class _HomePageState2 extends State<HomePage2>
               });
             }));
 
-    final makeBottom = Container(
-      height: 55.0,
-      child: BottomAppBar(
-        color: Color.fromRGBO(33, 33, 33, 1.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            IconButton(
-              icon: Icon(Icons.home, color: Colors.white),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: Icon(Icons.blur_on, color: Colors.white),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: Icon(Icons.hotel, color: Colors.white),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: Icon(Icons.account_box, color: Colors.white),
-              onPressed: () {},
-            )
-          ],
-        ),
-      ),
-    );
-
     return Scaffold(
       //backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
       body: makeBody,
-      bottomNavigationBar: makeBottom,
+      //bottomNavigationBar: makeBottom,
     );
   }
 
@@ -252,4 +198,15 @@ List getLessons() {
         content:
             "Start by taking a couple of minutes to read the info in this section. Launch your app and click on the Settings menu.  While on the settings page, click the Save button.  You should see a circular progress indicator display in the middle of the page and the user interface elements cannot be clicked due to the modal barrier that is constructed."),
   ];
+}
+
+class MyItem {
+  MyItem(this.key, this.icon, this.title);
+
+  final String key;
+  final IconData icon;
+  final String title;
+
+  bool operator ==(o) => o is MyItem && o.key == key;
+  int get hashCode => key.hashCode;
 }
