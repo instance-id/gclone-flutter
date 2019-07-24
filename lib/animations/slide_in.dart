@@ -8,7 +8,7 @@ set setupComplete(bool completed) => _setupComplete = completed;
 
 void _listenToAnimationFinished(status) {
   if (status == AnimationStatus.completed) {
-    setupComplete = true;
+    setupComplete = false;
   }
 }
 

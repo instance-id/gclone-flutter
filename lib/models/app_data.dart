@@ -10,3 +10,14 @@ const GOOGLEPLAY_URL =
     'https://play.google.com/store/apps/details?id=io.github.x_wei.flutter_catalog';
 const GITHUB_URL = 'https://github.com/instance-id/gclone_flutter';
 const AUTHOR_SITE = 'http://instance.id';
+
+class MyItem {
+  MyItem(this.key, this.icon, this.title);
+
+  final String key;
+  final IconData icon;
+  final String title;
+
+  bool operator ==(o) => o is MyItem && o.key == key;
+  int get hashCode => key.hashCode;
+}

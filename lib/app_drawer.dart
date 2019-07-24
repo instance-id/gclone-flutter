@@ -3,7 +3,7 @@ import 'package:gclone/routes/about.dart';
 
 import 'models/app_data.dart';
 
-ListView getNavDrawerItems(State state, BuildContext context) {
+Widget getNavDrawerItems(State state, BuildContext context) {
   final drawerHeader = DrawerHeader(
     decoration: BoxDecoration(color: Theme.of(context).primaryColor),
     child: Column(
@@ -19,5 +19,6 @@ ListView getNavDrawerItems(State state, BuildContext context) {
   List<Widget> drawerNavItems = []..add(drawerHeader)..add(AboutRoute(context));
   return ListView(
     children: drawerNavItems,
+    shrinkWrap: true,
   );
 }

@@ -7,6 +7,7 @@ class Lesson {
   int price;
   String content;
   IconData icon;
+  String key;
 
   Lesson(
       {this.title,
@@ -14,5 +15,6 @@ class Lesson {
       this.indicatorValue,
       this.price,
       this.content,
-      this.icon});
+      this.icon,
+      this.key});
 }

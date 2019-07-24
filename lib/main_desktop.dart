@@ -10,7 +10,6 @@ import 'app_home.dart';
 
 void main() {
   debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
-
   runApp(
     gclone(),
   );
@@ -20,10 +19,17 @@ void main() {
 class gclone extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
+
     return MaterialApp(
       showPerformanceOverlay: false,
-      debugShowMaterialGrid: true,
+      debugShowMaterialGrid: false,
       title: 'gclone',
+      home: ChangeNotifierProvider<NavigationProvider>(
+        builder: (_) => NavigationProvider(),
+        child: AppHome(),
+      ),
+// #region ThemeData
       theme: ThemeData(
         primarySwatch: MaterialColor(4280361249, {
           50: Color(0xfff2f2f2),
@@ -499,10 +505,8 @@ class gclone extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(0.0)),
         )),
       ),
-      home: ChangeNotifierProvider<NavigationProvider>(
-        builder: (_) => NavigationProvider(),
-        child: AppHome(),
-      ),
+// #endregion
+      // #endregion
     );
   }
 }

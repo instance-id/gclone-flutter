@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:gclone/animations/slide_in.dart';
 import 'package:gclone/get_data.dart';
 import 'package:gclone/helpers/icons.dart';
+import 'package:gclone/models/app_data.dart';
 import 'package:gclone/models/lesson.dart';
-import 'package:gclone/provider/navigation_provider.dart';
-import 'package:provider/provider.dart';
 
 import '../DetailPage.dart';
 
@@ -196,15 +195,4 @@ List getLessons() {
         content:
             "Start by taking a couple of minutes to read the info in this section. Launch your app and click on the Settings menu.  While on the settings page, click the Save button.  You should see a circular progress indicator display in the middle of the page and the user interface elements cannot be clicked due to the modal barrier that is constructed."),
   ];
-}
-
-class MyItem {
-  MyItem(this.key, this.icon, this.title);
-
-  final String key;
-  final IconData icon;
-  final String title;
-
-  bool operator ==(o) => o is MyItem && o.key == key;
-  int get hashCode => key.hashCode;
 }

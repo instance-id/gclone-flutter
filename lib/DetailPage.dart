@@ -1,17 +1,51 @@
+import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 
+import 'animations/animate_details.dart';
 import 'models/lesson.dart';
 
-class DetailPage extends StatelessWidget {
+class DetailPage extends StatefulWidget {
   final Lesson lesson;
-  DetailPage({Key key, this.lesson}) : super(key: key);
+  DetailPage({
+    Key key,
+    this.lesson,
+  }) : super(key: key);
+  @override
+  _DetailPageState createState() => _DetailPageState();
+}
+
+class _DetailPageState extends State<DetailPage>
+    with SingleTickerProviderStateMixin {
+  AnimationController _controller;
+
+  @override
+  void initState() {
+    _controller = new AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    )..addListener(() {
+        setState(() {});
+      });
+    _controller.forward();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    var animation = new DetailsAnimation(_controller);
+
     final levelIndicator = Container(
       child: Container(
         child: LinearProgressIndicator(
             backgroundColor: Color.fromRGBO(255, 255, 255, 1),
-            value: lesson.indicatorValue,
+            value: animation
+                .completionValue.value, // widget.lesson.indicatorValue,
             valueColor: AlwaysStoppedAnimation(Colors.green)),
       ),
     );
@@ -19,100 +53,145 @@ class DetailPage extends StatelessWidget {
     final topContentText = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        SizedBox(height: 60.0),
-        Icon(
-          lesson.icon,
-          color: Colors.white,
-          size: 120.0,
+        SizedBox(height: 15.0),
+        Hero(
+          tag: widget.lesson.key,
+          child: Icon(
+            widget.lesson.icon,
+            color: Colors.white,
+            size: 90.0,
+          ),
+          //createRectTween: _createRectTween,
         ),
         Container(
-          width: 90.0,
-          child: new Divider(color: Colors.green),
+          width: animation.dividerWidth.value,
+          child: new Divider(
+            color: Colors.green,
+          ),
         ),
         SizedBox(height: 10.0),
         Text(
-          lesson.title,
-          style: TextStyle(color: Colors.white, fontSize: 45.0),
+          widget.lesson.title,
+          style: TextStyle(
+              color: Colors.white.withOpacity(animation.nameOpacity.value),
+              fontSize: 45.0),
         ),
-        SizedBox(height: 30.0),
+        SizedBox(height: 10.0),
         Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          //mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Expanded(flex: 2, child: levelIndicator),
             Expanded(
-                flex: 3,
-                child: Padding(
-                    padding: EdgeInsets.only(left: 10.0),
-                    child: Text(
-                      lesson.level,
-                      style: TextStyle(color: Colors.white),
-                    ))),
+              flex: 5,
+              child: Padding(
+                padding: EdgeInsets.only(left: 10.0),
+                child: Text(
+                  widget.lesson.level,
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
           ],
         ),
       ],
     );
 
-    final topContent = Stack(
-      children: <Widget>[
-        Container(
-            padding: EdgeInsets.only(left: 10.0),
-            height: MediaQuery.of(context).size.height * 0.5,
-            decoration: new BoxDecoration(
-              image: new DecorationImage(
-                image: new AssetImage("drive-steering-wheel.jpg"),
-                fit: BoxFit.cover,
-              ),
-            )),
-        Container(
-          height: MediaQuery.of(context).size.height * 0.5,
-          padding: EdgeInsets.all(40.0),
-          width: MediaQuery.of(context).size.width,
-          //decoration: BoxDecoration(color: Color.fromRGBO(58, 66, 86, .9)),
-          child: Center(
-            child: topContentText,
+    Widget topContent() {
+      return Stack(
+        children: <Widget>[
+          Container(
+            height: MediaQuery.of(context).size.height * 0.6,
+            padding: EdgeInsets.all(60.0),
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(color: Color(0xFF424242)),
+            child: Center(
+              child: topContentText,
+            ),
           ),
-        ),
-        Positioned(
-          left: 8.0,
-          top: 60.0,
-          child: InkWell(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: Icon(Icons.arrow_back, color: Colors.white),
-          ),
-        )
-      ],
-    );
+          Positioned(
+            left: 8.0,
+            top: 5.0,
+            child: InkWell(
+              onTap: () {
+                //Navigator.pop(context);
+                Navigator.of(context).pop();
+              },
+              child: Icon(Icons.arrow_back, color: Colors.white),
+            ),
+          )
+        ],
+      );
+    }
 
     final bottomContentText = Text(
-      lesson.content,
-      style: TextStyle(fontSize: 18.0),
+      widget.lesson.content,
+      style: TextStyle(
+        fontSize: 18.0,
+        color: Colors.white.withOpacity(animation.descriptionOpacity.value),
+      ),
     );
     final readButton = Container(
-        padding: EdgeInsets.symmetric(vertical: 16.0),
-        width: MediaQuery.of(context).size.width,
-        child: RaisedButton(
-          onPressed: () => {},
-          //color: Color.fromRGBO(58, 66, 86, 1.0),
-          child: Text("Configure this provider",
-              style: TextStyle(color: Colors.white)),
-        ));
-    final bottomContent = Container(
-      // height: MediaQuery.of(context).size.height,
+      padding: EdgeInsets.symmetric(vertical: 16.0),
       width: MediaQuery.of(context).size.width,
-      // color: Theme.of(context).primaryColor,
-      padding: EdgeInsets.all(30.0),
-      child: Center(
-        child: Column(
-          children: <Widget>[bottomContentText, readButton],
+      child: new Transform(
+        transform: new Matrix4.translationValues(
+          animation.buttonXTranslation.value,
+          0.0,
+          0.0,
+        ),
+        child: new Opacity(
+          opacity: animation.videoScrollerOpacity.value,
+          child: new SizedBox.fromSize(
+            size: new Size.fromHeight(50.0),
+            child: RaisedButton(
+              onPressed: () => {},
+              color: Color(0xFF424242),
+              child: Text(
+                "Configure this provider",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
         ),
       ),
     );
 
+    Widget bottomContent() {
+      return Container(
+        // height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        // color: Theme.of(context).primaryColor,
+        padding: EdgeInsets.fromLTRB(60.0, 20, 60, 60),
+        child: Center(
+          child: Column(
+            children: <Widget>[bottomContentText, readButton],
+          ),
+        ),
+      );
+    }
+
+    Widget _buildAnimation(BuildContext context, Widget child) {
+      return new Column(
+        children: <Widget>[
+          new Opacity(
+            opacity: animation.backdropOpacity.value,
+            child: topContent(),
+          ),
+          new Opacity(
+            opacity: animation.backdropOpacity.value,
+            child: bottomContent(),
+          ),
+        ],
+      );
+    }
+
     return Scaffold(
-      body: Column(
-        children: <Widget>[topContent, bottomContent],
+      body: new AnimatedBuilder(
+        animation: animation.controller,
+        builder: _buildAnimation,
       ),
     );
   }

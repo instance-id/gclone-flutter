@@ -4,6 +4,7 @@ go 1.12
 
 require (
 	github.com/Unknwon/goconfig v0.0.0-20190425194916-3dba17dd7b9e
+	github.com/chunhunghan/file_picker v0.0.0-20190701055746-3c37e9531ccb
 	github.com/getlantern/context v0.0.0-20190109183933-c447772a6520 // indirect
 	github.com/getlantern/errors v0.0.0-20190325191628-abdb3e3e36f7 // indirect
 	github.com/getlantern/golog v0.0.0-20170508214112-cca714f7feb5 // indirect
@@ -11,7 +12,7 @@ require (
 	github.com/getlantern/hidden v0.0.0-20190325191715-f02dbb02be55 // indirect
 	github.com/getlantern/ops v0.0.0-20190325191751-d70cb0d6f85f // indirect
 	github.com/getlantern/systray v0.0.0-20190626064521-f2fa635d0474
-	github.com/go-flutter-desktop/go-flutter v0.26.0
+	github.com/go-flutter-desktop/go-flutter v0.27.0
 	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/instance-id/gclone-plugins/version v0.0.1
 	github.com/mitchellh/go-homedir v1.1.0
@@ -32,3 +33,5 @@ replace github.com/instance-id/gclone_flutter => ../../../../go/src/github.com/i
 replace github.com/instance-id/gclone-plugins/version => ../../../../github.com/instance-id/gclone-plugins/version
 
 replace github.com/instance-id/gclone_flutter/backend/plugins/data => ../../../../go/src/github.com/instance-id/gclone_flutter/backend/plugins/data
+
+replace github.com/miguelpruivo/plugins_flutter_file_picker/example => ./../../../../../../../go/src/github.com/miguelpruivo/plugins_flutter_file_picker/example/desktop

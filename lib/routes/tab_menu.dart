@@ -114,7 +114,19 @@ class TabMenuState extends State<TabMenu> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Container(
       //color: AppColors.PRIMARY_LIGHT,
-      color: Colors.transparent,
+      //color: Colors.transparent,
+      //color: Color.fromRGBO(35, 35, 35, 0.2),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+            begin: Alignment.bottomCenter,
+            end: Alignment.topCenter,
+            colors: [
+              Color(0xFF232323),
+              Color(0xDD212121),
+              Color(0xDD292929),
+              Color(0xFF303030),
+            ]),
+      ),
       child: Stack(
         alignment: Alignment.topCenter,
         children: <Widget>[
