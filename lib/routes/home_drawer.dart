@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:gclone/helpers/custom_color.dart';
 
-import 'helpers/custom_color.dart';
-
+// --- TODO This is the current drawer menu! ------------------------------------------------
 class HomeDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

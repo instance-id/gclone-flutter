@@ -1,38 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:gclone/routes/home_drawer.dart';
 import 'package:gclone/routes/job_status.dart';
-import 'package:gclone/routes/provider_list.dart';
 import 'package:gclone/routes/remotes.dart';
 import 'package:gclone/routes/schedule_jobs.dart';
 import 'package:gclone/routes/tab_menu.dart';
-import 'package:provider/provider.dart';
 
-import 'helpers/animate_route.dart';
 import 'helpers/custom_color.dart';
-import 'models/get_data.dart';
 
-//List remotes;
-//Map getData;
-//List providerData;
-//List<CardDetails> remotesList;
-
-class AppHome extends StatefulWidget {
-  AppHome(this.getDataPlugin);
-  final GetDataPlugin getDataPlugin;
-
+class AppHomeTest extends StatefulWidget {
   @override
-  _AppHomeState createState() => _AppHomeState();
+  _AppHomeTestState createState() => _AppHomeTestState();
 }
 
-class _AppHomeState extends State<AppHome> with TickerProviderStateMixin {
+class _AppHomeTestState extends State<AppHomeTest>
+    with TickerProviderStateMixin {
   final GlobalKey<TabMenuState> _keyNavigator = GlobalKey<TabMenuState>();
-
-  get getDataPlugin => null;
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   final List<Widget> pages = [];
   int pageIx = 1;
@@ -41,7 +23,7 @@ class _AppHomeState extends State<AppHome> with TickerProviderStateMixin {
   );
   bool _propagateAnimations = true;
 
-  _AppHomeState() {
+  _AppHomeTestState() {
     pages.add(ScheduleJobs());
     pages.add(Remotes());
     pages.add(JobStatus());
@@ -60,8 +42,6 @@ class _AppHomeState extends State<AppHome> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final GetDataPlugin getDataPlugin = Provider.of<GetDataPlugin>(context);
-
     TabMenu navigator = TabMenu(
       key: _keyNavigator,
       onChanged: onChanged,
@@ -105,13 +85,22 @@ class _AppHomeState extends State<AppHome> with TickerProviderStateMixin {
           onSelected: (int result) async {
             switch (result) {
               case 0:
-                Navigator.push(
-                  context,
-                  AnimateRoute(
-                    fullscreenDialog: true,
-                    builder: (context) => ProviderList(),
-                  ),
-                );
+//                CleaningBloc _bloc = BlocProvider.of(context);
+//
+//                var _provider = BlocProvider(
+//                    bloc: _bloc,
+//                    child: CleaningEditor(
+//                      cleaning: Cleaning(),
+//                    ));
+//
+//                Cleaning c = await Navigator.push(
+//                  context,
+//                  AnimateRoute(builder: (context) => _provider),
+//                );
+//
+//                if (c != null) {
+//                  _bloc.findPendents();
+//                }
                 break;
 
               case 1:
@@ -146,7 +135,6 @@ class _AppHomeState extends State<AppHome> with TickerProviderStateMixin {
             }
           },
           icon: Icon(Icons.add),
-          tooltip: "Provider Menu",
           itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
             const PopupMenuItem<int>(
               value: 0,
@@ -157,7 +145,7 @@ class _AppHomeState extends State<AppHome> with TickerProviderStateMixin {
                   color: AppColors.PRIMARY_DARK,
                 ),
                 title: Text(
-                  'Add New Provider',
+                  'Faxinas',
                   style: TextStyle(
                     color: AppColors.PRIMARY_DARK,
                   ),

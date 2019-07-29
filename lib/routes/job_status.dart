@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gclone/animations/slide_in.dart';
-import 'package:gclone/get_data.dart';
 import 'package:gclone/helpers/icons.dart';
 import 'package:gclone/models/app_data.dart';
-import 'package:gclone/models/lesson.dart';
+import 'package:gclone/models/get_data.dart';
+import 'package:gclone/models/provider_data.dart';
 
-import '../DetailPage.dart';
+import '../detail_page.dart';
 
 const appTitle = "gclone";
 bool startCompleted = false;
@@ -19,7 +19,7 @@ class _JobStatusState extends State<JobStatus> with TickerProviderStateMixin {
   GetDataPlugin getdataPlugin = GetDataPlugin();
   List remotes = [];
   List lessons;
-  List<MyItem> _remotesList;
+  List<CardDetails> _remotesList;
   var renderBuilder = true;
 
   // --- Init State -------------------------------------------------------------------------------
@@ -27,18 +27,18 @@ class _JobStatusState extends State<JobStatus> with TickerProviderStateMixin {
   void initState() {
     lessons = getLessons();
     _remotesList = [];
-    getdataPlugin.remotesGetData().then((data) {
+    getdataPlugin.getRemotes().then((data) {
       setState(() {
         remotes = data;
       });
       for (int i = 0; i < remotes.length; i++) {
-        _remotesList.add(MyItem(i.toString(), randomIcons[i], remotes[i]));
+        _remotesList.add(CardDetails(i.toString(), randomIcons[i], remotes[i]));
       }
     });
     super.initState();
   }
 
-  Widget _buildOptions(MyItem item) {
+  Widget _buildOptions(CardDetails item) {
     return PopupMenuButton(
       itemBuilder: (BuildContext context) {
         return [
@@ -64,7 +64,7 @@ class _JobStatusState extends State<JobStatus> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    ListTile _buildListTile(MyItem item, Lesson lesson) => ListTile(
+    ListTile _buildListTile(CardDetails item, ProviderData lesson) => ListTile(
           contentPadding:
               EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
           leading: Container(
@@ -100,23 +100,25 @@ class _JobStatusState extends State<JobStatus> with TickerProviderStateMixin {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => DetailPage(lesson: lesson)));
+                    builder: (context) => DetailPage(providerData: lesson)));
           },
         );
 
-    Card makeCard(BuildContext context, MyItem item, Lesson lesson) => Card(
-        key: Key(item.key),
-        elevation: 8.0,
-        margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
-        child: Container(
-          //decoration: BoxDecoration(color: Color.fromRGBO(64, 75, 96, .9)),
-          child: _buildListTile(item, lesson),
-        ));
+    Card makeCard(
+            BuildContext context, CardDetails item, ProviderData lesson) =>
+        Card(
+            key: Key(item.key),
+            elevation: 8.0,
+            margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+            child: Container(
+              //decoration: BoxDecoration(color: Color.fromRGBO(64, 75, 96, .9)),
+              child: _buildListTile(item, lesson),
+            ));
 
     buildChildren(bool startCompleted) {
       if (!setupComplete) {
         return _remotesList
-            .map((MyItem item) => SlideFadeIn(
+            .map((CardDetails item) => SlideFadeIn(
                   Key(item.key),
                   (double.parse(item.key) * 0.3) + 0.5,
                   makeCard(context, item, lessons[int.parse(item.key)]),
@@ -125,7 +127,7 @@ class _JobStatusState extends State<JobStatus> with TickerProviderStateMixin {
       } else {
         return _remotesList
             .map(
-              (MyItem item) =>
+              (CardDetails item) =>
                   makeCard(context, item, lessons[int.parse(item.key)]),
             )
             .toList();
@@ -144,7 +146,7 @@ class _JobStatusState extends State<JobStatus> with TickerProviderStateMixin {
                   newIndex = _remotesList.length;
                 if (oldIndex < newIndex) newIndex--;
 
-                MyItem item = _remotesList[oldIndex];
+                CardDetails item = _remotesList[oldIndex];
                 _remotesList.remove(item);
                 _remotesList.insert(newIndex, item);
               });
@@ -166,29 +168,29 @@ class _JobStatusState extends State<JobStatus> with TickerProviderStateMixin {
 
 List getLessons() {
   return [
-    Lesson(
-        title: "Google Drive",
+    ProviderData(
+        provider: "Google Drive",
         level: "Last run: Successful",
         indicatorValue: 1,
         price: 20,
         content:
             "Start by taking a couple of minutes to read the info in this section. Launch your app and click on the Settings menu.  While on the settings page, click the Save button.  You should see a circular progress indicator display in the middle of the page and the user interface elements cannot be clicked due to the modal barrier that is constructed."),
-    Lesson(
-        title: "Google Cloud",
+    ProviderData(
+        provider: "Google Cloud",
         level: "Backup in progress",
         indicatorValue: 0.75,
         price: 50,
         content:
             "Start by taking a couple of minutes to read the info in this section. Launch your app and click on the Settings menu.  While on the settings page, click the Save button.  You should see a circular progress indicator display in the middle of the page and the user interface elements cannot be clicked due to the modal barrier that is constructed."),
-    Lesson(
-        title: "Secure FTP",
+    ProviderData(
+        provider: "Secure FTP",
         level: "Last run: Error",
         indicatorValue: 0,
         price: 30,
         content:
             "Start by taking a couple of minutes to read the info in this section. Launch your app and click on the Settings menu.  While on the settings page, click the Save button.  You should see a circular progress indicator display in the middle of the page and the user interface elements cannot be clicked due to the modal barrier that is constructed."),
-    Lesson(
-        title: "Local Storage (USB)",
+    ProviderData(
+        provider: "Local Storage (USB)",
         level: "Last run: Successful",
         indicatorValue: 1.0,
         price: 50,

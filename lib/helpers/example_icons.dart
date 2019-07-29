@@ -21,5 +21,5 @@ class FAIcons implements Comparable {
   int get hashCode => iconData.hashCode ^ title.hashCode;
 
   @override
-  int compareTo(other) => title.compareTo(other.title);
+  int compareTo(other) => title.compareTo(other.provider);
 }

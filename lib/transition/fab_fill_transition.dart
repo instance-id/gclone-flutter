@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../styling.dart';
+import 'package:gclone/helpers/styling.dart';
 
 class FabFillTransition extends StatelessWidget {
   const FabFillTransition({

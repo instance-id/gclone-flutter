@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:gclone/animations/slide_in.dart';
-import 'package:gclone/get_data.dart';
 import 'package:gclone/helpers/animate_route.dart';
 import 'package:gclone/helpers/icons.dart';
 import 'package:gclone/helpers/icons_helper.dart';
 import 'package:gclone/models/app_data.dart';
-import 'package:gclone/models/lesson.dart';
+import 'package:gclone/models/gclone_data.dart';
+import 'package:gclone/models/get_data.dart';
+import 'package:gclone/models/provider_data.dart';
 
-import '../DetailPage.dart';
+import '../detail_page.dart';
 
 const appTitle = "gclone";
 bool startCompleted = false;
@@ -20,31 +21,44 @@ class Remotes extends StatefulWidget {
 
 class _RemotesState extends State<Remotes> with TickerProviderStateMixin {
   GetDataPlugin getDataPlugin = GetDataPlugin();
-  List remotes = [];
-  List lessons;
-  List<MyItem> _remotesList;
+//  List remotes = [];
+//  Map getData;
+//  List providerData;
+//  List<CardDetails> _remotesList;
   var renderBuilder = true;
 
   // --- Init State -------------------------------------------------------------------------------
   @override
   void initState() {
-    lessons = getLessons();
-    _remotesList = [];
-    getDataPlugin.remotesGetData().then((data) {
+    providerData = getProviderList();
+    remotesList = [];
+    getDataPlugin.getRemotes().then((getRemotes) {
       setState(() {
-        remotes = data;
+        remotes = getRemotes;
+        print(remotes[0]);
+        print(remotes[1]);
+        print(remotes[2]);
       });
-      var icon;
-      for (int i = 0; i < remotes.length; i++) {
-        if (remotes[i] == "pcbackup") {
-          icon = getFontAwesomeIcon(name: "googleDrive");
-        } else {
-          icon = randomIcons[i];
+      getDataPlugin.getData().then((data) {
+        setState(() {
+          getData = data;
+        });
+        print(getData[remotes[0]]["type"]);
+        var icon;
+        for (int i = 0; i < remotes.length; i++) {
+          if (getData[remotes[i]]["type"] == "drive") {
+            icon = getFontAwesomeIcon(name: "googleDrive");
+          } else if (getData[remotes[i]]["type"] == "sftp") {
+            icon = getFontAwesomeIcon(name: "solidFolder");
+          } else if (getData[remotes[i]]["type"] == "google cloud storage") {
+            icon = getFontAwesomeIcon(name: "google");
+          } else {
+            icon = randomIcons[i];
+          }
+          remotesList.add(CardDetails(i.toString(), icon, remotes[i]));
         }
-        _remotesList.add(MyItem(i.toString(), icon, remotes[i]));
-      }
+      });
     });
-
     super.initState();
   }
 
@@ -52,7 +66,7 @@ class _RemotesState extends State<Remotes> with TickerProviderStateMixin {
     return MaterialRectArcTween(begin: begin, end: end);
   }
 
-  Widget _buildOptions(MyItem item) {
+  Widget _buildOptions(CardDetails item) {
     return PopupMenuButton(
       itemBuilder: (BuildContext context) {
         return [
@@ -80,7 +94,7 @@ class _RemotesState extends State<Remotes> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     timeDilation = 2;
     //final navigation = Provider.of<NavigationProvider>(context);
-    ListTile _buildListTile(MyItem item, Lesson lesson) => ListTile(
+    ListTile _buildListTile(CardDetails item, ProviderData lesson) => ListTile(
           contentPadding:
               EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
           leading: Container(
@@ -121,35 +135,37 @@ class _RemotesState extends State<Remotes> with TickerProviderStateMixin {
               context,
               AnimateRoute(
                 fullscreenDialog: true,
-                builder: (context) => DetailPage(lesson: lesson),
+                builder: (context) => DetailPage(providerData: lesson),
               ),
             );
           },
         );
 
-    Card makeCard(BuildContext context, MyItem item, Lesson lesson) => Card(
-        key: Key(item.key),
-        elevation: 8.0,
-        margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
-        child: Container(
-          //decoration: BoxDecoration(color: Color.fromRGBO(64, 75, 96, .9)),
-          child: _buildListTile(item, lesson),
-        ));
+    Card makeCard(
+            BuildContext context, CardDetails item, ProviderData lesson) =>
+        Card(
+            key: Key(item.key),
+            elevation: 8.0,
+            margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+            child: Container(
+              //decoration: BoxDecoration(color: Color.fromRGBO(64, 75, 96, .9)),
+              child: _buildListTile(item, lesson),
+            ));
 
     buildChildren(bool startCompleted) {
       if (!setupComplete) {
-        return _remotesList
-            .map((MyItem item) => SlideFadeIn(
+        return remotesList
+            .map((CardDetails item) => SlideFadeIn(
                   Key(item.key),
                   (double.parse(item.key) * 0.3) + 0.5,
-                  makeCard(context, item, lessons[int.parse(item.key)]),
+                  makeCard(context, item, providerData[int.parse(item.key)]),
                 ))
             .toList();
       } else {
-        return _remotesList
+        return remotesList
             .map(
-              (MyItem item) =>
-                  makeCard(context, item, lessons[int.parse(item.key)]),
+              (CardDetails item) =>
+                  makeCard(context, item, providerData[int.parse(item.key)]),
             )
             .toList();
       }
@@ -163,13 +179,13 @@ class _RemotesState extends State<Remotes> with TickerProviderStateMixin {
             onReorder: (oldIndex, newIndex) {
               setState(() {
                 // These two lines are workarounds for ReorderableListView problems
-                if (newIndex > _remotesList.length)
-                  newIndex = _remotesList.length;
+                if (newIndex > remotesList.length)
+                  newIndex = remotesList.length;
                 if (oldIndex < newIndex) newIndex--;
 
-                MyItem item = _remotesList[oldIndex];
-                _remotesList.remove(item);
-                _remotesList.insert(newIndex, item);
+                CardDetails item = remotesList[oldIndex];
+                remotesList.remove(item);
+                remotesList.insert(newIndex, item);
               });
             }));
 
@@ -179,38 +195,4 @@ class _RemotesState extends State<Remotes> with TickerProviderStateMixin {
       //bottomNavigationBar: makeBottom,
     );
   }
-}
-
-List getLessons() {
-  return [
-    Lesson(
-        title: "Google Cloud",
-        level: "Backup in progress",
-        indicatorValue: 0.75,
-        price: 50,
-        content:
-            "Start by taking a couple of minutes to read the info in this section. Launch your app and click on the Settings menu.  While on the settings page, click the Save button.  You should see a circular progress indicator display in the middle of the page and the user interface elements cannot be clicked due to the modal barrier that is constructed."),
-    Lesson(
-        title: "Secure FTP",
-        level: "Last run: Error",
-        indicatorValue: 0,
-        price: 30,
-        content:
-            "Start by taking a couple of minutes to read the info in this section. Launch your app and click on the Settings menu.  While on the settings page, click the Save button.  You should see a circular progress indicator display in the middle of the page and the user interface elements cannot be clicked due to the modal barrier that is constructed."),
-    Lesson(
-        title: "Google Drive",
-        icon: getFontAwesomeIcon(name: "googleDrive"),
-        level: "Last run: Successful",
-        indicatorValue: 1,
-        price: 20,
-        content:
-            "Start by taking a couple of minutes to read the info in this section. Launch your app and click on the Settings menu.  While on the settings page, click the Save button.  You should see a circular progress indicator display in the middle of the page and the user interface elements cannot be clicked due to the modal barrier that is constructed."),
-    Lesson(
-        title: "Local Storage (USB)",
-        level: "Last run: Successful",
-        indicatorValue: 1.0,
-        price: 50,
-        content:
-            "Start by taking a couple of minutes to read the info in this section. Launch your app and click on the Settings menu.  While on the settings page, click the Save button.  You should see a circular progress indicator display in the middle of the page and the user interface elements cannot be clicked due to the modal barrier that is constructed."),
-  ];
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/animation.dart';
 
-class DetailsAnimation {
-  DetailsAnimation(this.controller)
+class ProviderAnimation {
+  ProviderAnimation(this.controller)
       : backdropOpacity = new Tween(begin: 0.0, end: 1.0).animate(
           new CurvedAnimation(
             parent: controller,

@@ -1,11 +1,10 @@
 package main
 
 import (
+	"github.com/chunhunghan/file_picker"
 	"github.com/go-flutter-desktop/go-flutter"
 	"github.com/instance-id/gclone-plugins/version"
 	"github.com/instance-id/gclone_flutter/backend/plugins/data"
-	"github.com/chunhunghan/file_picker"
-
 )
 
 var options = []flutter.Option{
@@ -13,4 +12,5 @@ var options = []flutter.Option{
 	flutter.AddPlugin(version.VersionPlugin{}),
 	flutter.AddPlugin(&data.DataPlugin{}),
 	flutter.AddPlugin(&file_picker.FilePickerPlugin{}),
+	flutter.PopBehavior(flutter.PopBehaviorClose),
 }
