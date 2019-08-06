@@ -92,62 +92,16 @@ class DetailsAnimation {
             ),
           ),
         ),
-        videoScrollerOpacity = new Tween(begin: 0.0, end: 1.0).animate(
+        configureButtonOpacity = new Tween(begin: 0.0, end: 1.0).animate(
           new CurvedAnimation(
             parent: controller,
             curve: new Interval(
               0.650,
               1.00,
               curve: Curves.fastOutSlowIn,
-            ),
-          ),
-        ),
-        // ------------------------------------------------ Chart Animations ---
-        chartHeight = new Tween(begin: 0.0, end: 15.0).animate(
-          new CurvedAnimation(
-            parent: controller,
-            curve: new Interval(
-              0.650,
-              1.00,
-              curve: Curves.fastOutSlowIn,
-            ),
-          ),
-        ),
-        chartPosition = new Tween(begin: -150.0, end: 0.0).animate(
-          new CurvedAnimation(
-            parent: controller,
-            curve: new Interval(
-              0.350,
-              0.750,
-              curve: Curves.ease,
-            ),
-          ),
-        ),
-        chartOpacity = new Tween(begin: 0.0, end: 1.0).animate(
-          new CurvedAnimation(
-            parent: controller,
-            curve: new Interval(
-              0.350,
-              0.650,
-              curve: Curves.easeIn,
             ),
           ),
         );
-
-  double numberAnimate(double order, double current) {
-    var adjustedValue = new Tween(begin: 1.0, end: current).animate(
-      new CurvedAnimation(
-        parent: controller,
-        curve: new Interval(
-          0.350, // + (order * 0.1),
-          0.650,
-          curve: Curves.easeIn,
-        ),
-      ),
-    );
-
-    return adjustedValue.value;
-  }
 
   final AnimationController controller;
   final Animation<double> backdropOpacity;
@@ -156,11 +110,8 @@ class DetailsAnimation {
   final Animation<double> nameOpacity;
   final Animation<double> completionSize;
   final Animation<double> completionValue;
-  final Animation<double> chartHeight;
-  final Animation<double> chartPosition;
-  final Animation<double> chartOpacity;
   final Animation<double> dividerWidth;
   final Animation<double> descriptionOpacity;
   final Animation<double> buttonXTranslation;
-  final Animation<double> videoScrollerOpacity;
+  final Animation<double> configureButtonOpacity;
 }

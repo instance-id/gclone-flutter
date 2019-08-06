@@ -35,18 +35,19 @@ class _ProviderConfigState extends State<ProviderConfig>
     Widget topContent() {
       return Stack(
         children: <Widget>[
-          // ------------------------------------------------------- Content ---
+          // ------------------------------------------------------------------- Content
 
+          // ------------------------------------------------------------------- Back Button
           Positioned(
-            left: 8.0,
-            top: 5.0,
+            left: 15.0,
+            top: 17.0,
             child: InkWell(
               onTap: () {
                 Navigator.of(context).pop();
               },
               child: Icon(Icons.arrow_back, color: Colors.white),
             ),
-          )
+          ),
         ],
       );
     }
@@ -61,7 +62,7 @@ class _ProviderConfigState extends State<ProviderConfig>
         child: Center(
           child: Column(
             children: <Widget>[
-              // --------------------------------------------------- Content ---
+              // --------------------------------------------------------------- Content
             ],
           ),
         ),

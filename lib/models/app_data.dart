@@ -11,13 +11,8 @@ const GOOGLEPLAY_URL =
 const GITHUB_URL = 'https://github.com/instance-id/gclone_flutter';
 const AUTHOR_SITE = 'http://instance.id';
 
-class CardDetails {
-  CardDetails(this.key, this.icon, this.title);
-
-  final String key;
-  final IconData icon;
-  final String title;
-
-  bool operator ==(o) => o is CardDetails && o.key == key;
-  int get hashCode => key.hashCode;
-}
+/*
+double abovePadding = MediaQuery.of(context).padding.top;
+double appBarHeight = appBar.preferredSize.height;
+double leftHeight = screenHeight - abovePadding - appBarHeight;
+*/

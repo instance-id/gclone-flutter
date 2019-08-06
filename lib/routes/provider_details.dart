@@ -1,61 +1,75 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gclone/animations/animate_provider.dart';
+import 'package:gclone/models/get_data.dart';
 import 'package:gclone/models/provider_data.dart';
+import 'package:gclone/routes/provider_list.dart';
+import 'package:logging/logging.dart';
+import 'package:provider/provider.dart';
+
+ProviderData providerDataDetails;
 
 class ProviderDetails extends StatefulWidget {
-  final ProviderData providerData;
-  ProviderDetails({
-    Key key,
-    this.providerData,
-  }) : super(key: key);
+  ProviderDetails();
+
+  setDetails(ProviderData pData) {
+    providerDataDetails = pData;
+  }
+
   @override
   _ProviderDetailsState createState() => _ProviderDetailsState();
 }
 
 class _ProviderDetailsState extends State<ProviderDetails>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  final Logger log = new Logger('_ProviderDetailsState');
+
+  AnimationController _detailsController;
+  ProviderAnimation animation;
 
   void initState() {
-    _controller = new AnimationController(
-      duration: const Duration(milliseconds: 1000),
-      vsync: this,
-    )..addListener(() {
+    _detailsController = new AnimationController(
+        duration: const Duration(milliseconds: 1000), vsync: this)
+      ..addListener(() {
         setState(() {});
       });
-    _controller.forward();
+    _detailsController.forward();
     super.initState();
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _detailsController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    var animation = new ProviderAnimation(_controller);
+    animation = new ProviderAnimation(_detailsController);
 
-    Widget topContent() {
+    var data = Provider.of<GetDataPlugin>(context);
+
+    topContent(context, data) {
       return Container(
+        color: Colors.transparent,
+        padding: EdgeInsets.fromLTRB(45, 0, 5, 0),
         child: Row(
           children: <Widget>[
             Expanded(
               child: Column(
+                // --------------------------------------------------------------- Left side top
+
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   SizedBox(height: 15.0),
-                  Hero(
-                    tag: widget.providerData.key,
-                    child: Icon(
-                      widget.providerData.icon,
-                      color: Colors.white,
-                      size: 90.0,
-                    ),
-                    //createRectTween: _createRectTween,
+//                  Hero(
+//                    tag: data.selectedProvider.providerID.toString(),
+                  Icon(
+                    currentProvider.icon,
+                    color: Colors.white,
+                    size: 90.0,
+//                    ),
+//                    //createRectTween: _createRectTween,
                   ),
                   Container(
                     width: animation.dividerWidth.value,
@@ -65,8 +79,9 @@ class _ProviderDetailsState extends State<ProviderDetails>
                   ),
                   SizedBox(height: 10.0),
                   Text(
-                    widget.providerData.provider,
+                    '${currentProvider.name}',
                     style: TextStyle(
+                        fontWeight: FontWeight.w300,
                         color: Colors.white
                             .withOpacity(animation.nameOpacity.value),
                         fontSize: 45.0),
@@ -76,8 +91,8 @@ class _ProviderDetailsState extends State<ProviderDetails>
               ),
             ),
             Container(
-              //padding: EdgeInsets.all(20),
-              width: MediaQuery.of(context).size.width * 0.25,
+              // ----------------------------------------------------------------- Right side top
+              width: MediaQuery.of(context).size.width * 0.20,
               child: new Transform(
                 transform: new Matrix4.translationValues(
                   0.0,
@@ -85,9 +100,11 @@ class _ProviderDetailsState extends State<ProviderDetails>
                   0.0,
                 ),
                 child: new Opacity(
-                    opacity: animation.chartOpacity.value,
-                    child: Text("Sup?") //use_LineChart(),
-                    ),
+                  opacity: animation.chartOpacity.value,
+                  child: Text(
+                    '${currentProvider.providerID}',
+                  ), //use_LineChart(),
+                ),
               ),
             ),
           ],
@@ -95,50 +112,58 @@ class _ProviderDetailsState extends State<ProviderDetails>
       );
     }
 
-    Widget bottomContent() {
+    bottomContent(context, GetDataPlugin data) {
       return Container(
-        // height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width * 0.5,
-
-        // color: Theme.of(context).primaryColor,
-        padding: EdgeInsets.fromLTRB(10.0, 10, 10, 10),
         child: Center(
           child: Column(
             children: <Widget>[
-              // --------------------------------------------------- Content ---
+              Container(
+                // --------------------------------------------------------------- Add new button
+                width: MediaQuery.of(context).size.width * 0.30,
+                child: RaisedButton(
+                  child: Opacity(
+                    opacity: 0.7,
+                    child: Text(
+                      "Add new remote provider",
+                      style: TextStyle(
+                        fontFamily: 'Roboto',
+                        color: Color(0xDDFFFFFF),
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ),
+                  elevation: 5,
+                  onPressed: () {
+                    log.shout(
+                        'SHOUTING FROM DETAILS ${providerDataDetails.providerID}');
+                  },
+                ),
+              ),
+              // ----------------------------------------------------------------- Content
             ],
           ),
         ),
       );
     }
 
-    Widget _buildAnimation(BuildContext context, Widget child) {
-      return new Column(
-        children: <Widget>[
-          Expanded(
-            flex: 5,
-            child: Container(
-              child: topContent(),
+    return Stack(
+      children: <Widget>[
+        Column(
+          children: <Widget>[
+            Container(
+              height: MediaQuery.of(context).size.height * 0.5,
+              child: Container(
+                child: topContent(context, data),
+              ),
             ),
-          ),
-          Expanded(
-            flex: 5,
-            child: Container(
-              child: bottomContent(),
+            Expanded(
+              child: Container(
+                child: bottomContent(context, data),
+              ),
             ),
-          ),
-        ],
-      );
-    }
-
-    return Material(
-      type: MaterialType.transparency,
-      child: Scaffold(
-        body: new AnimatedBuilder(
-          animation: animation.controller,
-          builder: _buildAnimation,
+          ],
         ),
-      ),
+      ],
     );
   }
 }

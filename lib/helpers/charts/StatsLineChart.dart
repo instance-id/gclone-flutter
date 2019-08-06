@@ -1,19 +1,21 @@
 import 'dart:convert';
 
-import 'package:bezier_chart/bezier_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:gclone/animations/animate_details.dart';
+import 'package:gclone/animations/charts/animate_chart.dart';
+import 'package:gclone/helpers/charts/chart_source/bezier/bezier_chart_config.dart';
+import 'package:gclone/helpers/charts/chart_source/bezier/bezier_chart_widget.dart';
+import 'package:gclone/helpers/charts/chart_source/bezier/bezier_line.dart';
 
-class use_LineChart extends StatefulWidget {
-  use_LineChart(DetailsAnimation animation) : _controller = animation;
-  final DetailsAnimation _controller;
+class StatsLineChart extends StatefulWidget {
+  StatsLineChart(AnimateCharts animation) : _chartController = animation;
+  final AnimateCharts _chartController;
 
   @override
-  _use_LineChartState createState() => _use_LineChartState();
+  _StatsLineChartState createState() => _StatsLineChartState();
 }
 
 // ignore: camel_case_types
-class _use_LineChartState extends State<use_LineChart> {
+class _StatsLineChartState extends State<StatsLineChart> {
   List<DataPoint> _items;
   List<double> _xAxis;
 
@@ -58,6 +60,8 @@ class _use_LineChartState extends State<use_LineChart> {
 
   @override
   Widget build(BuildContext context) {
+    //var pointerStatus = Provider.of<PointerStatus>(context);
+
     return Center(
       child: _items != null
           ? Container(
@@ -96,7 +100,7 @@ class _use_LineChartState extends State<use_LineChart> {
       BezierChartScale scale, BuildContext context, LinearGradient gradient) {
     return Center(
       child: Card(
-        elevation: widget._controller.chartHeight.value,
+        elevation: widget._chartController.chartHeight.value,
         //margin: EdgeInsets.all(10.0),
         child: Container(
           //color: Color(0x22303030),
@@ -131,32 +135,32 @@ class _use_LineChartState extends State<use_LineChart> {
                 data: // _items,
                     [
                   DataPoint<double>(
-                      value: widget._controller
-                          .numberAnimate(date7.day.truncateToDouble(), 10.0),
+                      value: widget._chartController
+                          .chartValues(date7.day.truncateToDouble(), 10.0),
                       xAxis: date7.day.truncateToDouble()),
                   DataPoint<double>(
-                      value: widget._controller
-                          .numberAnimate(date6.day.truncateToDouble(), 30.0),
+                      value: widget._chartController
+                          .chartValues(date6.day.truncateToDouble(), 30.0),
                       xAxis: date6.day.truncateToDouble()),
                   DataPoint<double>(
-                      value: widget._controller
-                          .numberAnimate(date5.day.truncateToDouble(), 50),
+                      value: widget._chartController
+                          .chartValues(date5.day.truncateToDouble(), 50),
                       xAxis: date5.day.truncateToDouble()),
                   DataPoint<double>(
-                      value: widget._controller
-                          .numberAnimate(date4.day.truncateToDouble(), 20),
+                      value: widget._chartController
+                          .chartValues(date4.day.truncateToDouble(), 20),
                       xAxis: date4.day.truncateToDouble()),
                   DataPoint<double>(
-                      value: widget._controller
-                          .numberAnimate(date3.day.truncateToDouble(), 80),
+                      value: widget._chartController
+                          .chartValues(date3.day.truncateToDouble(), 80),
                       xAxis: date3.day.truncateToDouble()),
                   DataPoint<double>(
-                      value: widget._controller
-                          .numberAnimate(date2.day.truncateToDouble(), 14),
+                      value: widget._chartController
+                          .chartValues(date2.day.truncateToDouble(), 14),
                       xAxis: date2.day.truncateToDouble()),
                   DataPoint<double>(
-                      value: widget._controller
-                          .numberAnimate(date1.day.truncateToDouble(), 30),
+                      value: widget._chartController
+                          .chartValues(date1.day.truncateToDouble(), 30),
                       xAxis: date1.day.truncateToDouble()),
                 ],
                 onMissingValue: (dateTime) {

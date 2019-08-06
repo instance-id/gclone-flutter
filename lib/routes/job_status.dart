@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gclone/animations/slide_in.dart';
-import 'package:gclone/helpers/icons.dart';
-import 'package:gclone/models/app_data.dart';
 import 'package:gclone/models/get_data.dart';
 import 'package:gclone/models/provider_data.dart';
 
@@ -16,7 +14,6 @@ class JobStatus extends StatefulWidget {
 }
 
 class _JobStatusState extends State<JobStatus> with TickerProviderStateMixin {
-  GetDataPlugin getdataPlugin = GetDataPlugin();
   List remotes = [];
   List lessons;
   List<CardDetails> _remotesList;
@@ -25,16 +22,6 @@ class _JobStatusState extends State<JobStatus> with TickerProviderStateMixin {
   // --- Init State -------------------------------------------------------------------------------
   @override
   void initState() {
-    lessons = getLessons();
-    _remotesList = [];
-    getdataPlugin.getRemotes().then((data) {
-      setState(() {
-        remotes = data;
-      });
-      for (int i = 0; i < remotes.length; i++) {
-        _remotesList.add(CardDetails(i.toString(), randomIcons[i], remotes[i]));
-      }
-    });
     super.initState();
   }
 
@@ -90,7 +77,7 @@ class _JobStatusState extends State<JobStatus> with TickerProviderStateMixin {
                 flex: 4,
                 child: Padding(
                     padding: EdgeInsets.only(left: 10.0),
-                    child: Text(lesson.level,
+                    child: Text(lesson.status,
                         style: TextStyle(color: Colors.white))),
               )
             ],
@@ -159,7 +146,6 @@ class _JobStatusState extends State<JobStatus> with TickerProviderStateMixin {
     );
   }
 
-  @override
   void afterFirstLayout(BuildContext context) {
     // Calling the same function "after layout" to resolve the issue.
     //setupComplete = true;
@@ -170,28 +156,28 @@ List getLessons() {
   return [
     ProviderData(
         provider: "Google Drive",
-        level: "Last run: Successful",
+        status: "Last run: Successful",
         indicatorValue: 1,
         price: 20,
         content:
             "Start by taking a couple of minutes to read the info in this section. Launch your app and click on the Settings menu.  While on the settings page, click the Save button.  You should see a circular progress indicator display in the middle of the page and the user interface elements cannot be clicked due to the modal barrier that is constructed."),
     ProviderData(
         provider: "Google Cloud",
-        level: "Backup in progress",
+        status: "Backup in progress",
         indicatorValue: 0.75,
         price: 50,
         content:
             "Start by taking a couple of minutes to read the info in this section. Launch your app and click on the Settings menu.  While on the settings page, click the Save button.  You should see a circular progress indicator display in the middle of the page and the user interface elements cannot be clicked due to the modal barrier that is constructed."),
     ProviderData(
         provider: "Secure FTP",
-        level: "Last run: Error",
+        status: "Last run: Error",
         indicatorValue: 0,
         price: 30,
         content:
             "Start by taking a couple of minutes to read the info in this section. Launch your app and click on the Settings menu.  While on the settings page, click the Save button.  You should see a circular progress indicator display in the middle of the page and the user interface elements cannot be clicked due to the modal barrier that is constructed."),
     ProviderData(
         provider: "Local Storage (USB)",
-        level: "Last run: Successful",
+        status: "Last run: Successful",
         indicatorValue: 1.0,
         price: 50,
         content:

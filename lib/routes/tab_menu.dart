@@ -13,6 +13,11 @@ class TabMenu extends StatefulWidget {
 }
 
 class TabMenuState extends State<TabMenu> with TickerProviderStateMixin {
+  bool menuHidden = false;
+  AnimationController _menuController;
+  Tween<Offset> _menuTween;
+  Animation<Offset> _menuAnimation;
+
   AnimationController _animationController;
   Tween<double> _positionTween;
   Animation<double> _positionAnimation;
@@ -20,6 +25,7 @@ class TabMenuState extends State<TabMenu> with TickerProviderStateMixin {
   AnimationController _fadeOutController;
   Animation<double> _fadeFabOutAnimation;
   Animation<double> _fadeFabInAnimation;
+  Animation<double> _fadeFabDownAnimation;
 
   double fabIconAlpha = 1;
   IconData nextIcon = Icons.search;
@@ -27,7 +33,8 @@ class TabMenuState extends State<TabMenu> with TickerProviderStateMixin {
 
   int currentSelected = 1;
 
-  void move(int idx) {
+  void move(int idx, {bool hideMenu = false}) {
+    menuHidden = hideMenu;
     switch (idx) {
       case 0:
         navScheduleJobs();
@@ -38,6 +45,9 @@ class TabMenuState extends State<TabMenu> with TickerProviderStateMixin {
       case 2:
         navJobStatus();
         break;
+      case 3:
+        navProviderList();
+        break;
     }
   }
 
@@ -45,42 +55,73 @@ class TabMenuState extends State<TabMenu> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
+    _menuController = AnimationController(
+        vsync: this,
+        duration: Duration(
+          milliseconds: (500),
+        ));
     _animationController = AnimationController(
-        vsync: this, duration: Duration(milliseconds: ANIM_DURATION));
+        vsync: this,
+        duration: Duration(
+          milliseconds: ANIM_DURATION,
+        ));
     _fadeOutController = AnimationController(
-        vsync: this, duration: Duration(milliseconds: (ANIM_DURATION ~/ 5)));
+        vsync: this,
+        duration: Duration(
+          milliseconds: (ANIM_DURATION ~/ 5),
+        ));
 
-    _positionTween = Tween<double>(begin: 0, end: 0);
-    _positionAnimation = _positionTween.animate(
-        CurvedAnimation(parent: _animationController, curve: Curves.easeOut))
-      ..addListener(() {
+    _menuTween = Tween<Offset>(begin: Offset.zero, end: Offset(0.0, 1.0));
+    _menuAnimation = _menuTween.animate(
+      CurvedAnimation(
+        parent: _menuController,
+        curve: Curves.easeOut,
+      ),
+    )..addListener(() {
         setState(() {});
       });
 
-    _fadeFabOutAnimation = Tween<double>(begin: 1, end: 0).animate(
-        CurvedAnimation(parent: _fadeOutController, curve: Curves.easeOut))
-      ..addListener(() {
-        setState(() {
-          fabIconAlpha = _fadeFabOutAnimation.value;
-        });
-      })
-      ..addStatusListener((AnimationStatus status) {
-        if (status == AnimationStatus.completed) {
-          setState(() {
-            activeIcon = nextIcon;
-          });
-        }
+    _positionTween = Tween<double>(begin: 0, end: 0);
+    _positionAnimation = _positionTween.animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeOut,
+      ),
+    )..addListener(() {
+        setState(() {});
       });
 
-    _fadeFabInAnimation = Tween<double>(begin: 0, end: 1).animate(
-        CurvedAnimation(
+    _fadeFabOutAnimation =
+        Tween<double>(begin: 1, end: 0).animate(CurvedAnimation(
+      parent: _fadeOutController,
+      curve: Curves.easeOut,
+    ))
+          ..addListener(() {
+            setState(() {
+              fabIconAlpha = _fadeFabOutAnimation.value;
+            });
+          })
+          ..addStatusListener((AnimationStatus status) {
+            if (status == AnimationStatus.completed) {
+              setState(() {
+                activeIcon = nextIcon;
+              });
+            }
+          });
+
+    _fadeFabInAnimation =
+        Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(
             parent: _animationController,
-            curve: Interval(0.8, 1, curve: Curves.easeOut)))
-      ..addListener(() {
-        setState(() {
-          fabIconAlpha = _fadeFabInAnimation.value;
-        });
-      });
+            curve: Interval(
+              0.8,
+              1,
+              curve: Curves.easeOut,
+            )))
+          ..addListener(() {
+            setState(() {
+              fabIconAlpha = _fadeFabInAnimation.value;
+            });
+          });
   }
 
   void navScheduleJobs() {
@@ -110,156 +151,177 @@ class TabMenuState extends State<TabMenu> with TickerProviderStateMixin {
     _initAnimationAndStart(_positionAnimation.value, 1);
   }
 
+  void navProviderList() {
+    setState(() {
+      nextIcon = Icons.insert_chart;
+      currentSelected = 1;
+      menuHidden = true;
+    });
+    _initAnimationAndStart(_positionAnimation.value, 0, menuHidden: menuHidden);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
+      //color: Color(0x00232323),
       decoration: BoxDecoration(
         gradient: LinearGradient(
             begin: Alignment.bottomCenter,
             end: Alignment.topCenter,
             colors: [
               Color(0xFF232323),
-              Color(0xDD212121),
-              Color(0xDD292929),
-              Color(0xFF303030),
+              Color(0x00212121),
+              Color(0x00292929),
+              Color(0x00303030),
             ]),
       ),
-      child: Stack(
-        alignment: Alignment.topCenter,
-        children: <Widget>[
-          Container(
-            height: 65,
-            margin: EdgeInsets.only(top: 45),
-            decoration:
-                BoxDecoration(color: Color.fromRGBO(35, 35, 35, 1), boxShadow: [
-              BoxShadow(
-                  color: Colors.black26,
-                  spreadRadius: 5,
-                  offset: Offset(0, -1),
-                  blurRadius: 8)
-            ]),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                TabItem(
-                    selected: currentSelected == 0,
-                    iconData: Icons.home,
-                    title: "SCHEDULE JOBS",
-                    callbackFunction: () {
-                      navScheduleJobs();
-                      widget.onChanged(0);
-                    }),
-                TabItem(
-                    selected: currentSelected == 1,
-                    iconData: Icons.search,
-                    title: "REMOTES",
-                    callbackFunction: () {
-                      navRemotes();
-                      widget.onChanged(1);
-                    }),
-                TabItem(
-                    selected: currentSelected == 2,
-                    iconData: Icons.person,
-                    title: "JOB STATUS",
-                    callbackFunction: () {
-                      navJobStatus();
-                      widget.onChanged(2);
-                    })
-              ],
+      child: SlideTransition(
+        position: _menuAnimation,
+        child: Stack(
+          alignment: Alignment.topCenter,
+          children: <Widget>[
+            Container(
+              height: 65,
+              margin: EdgeInsets.only(top: 45),
+              decoration: BoxDecoration(
+                  color: Color.fromRGBO(35, 35, 35, 1),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black26,
+                        spreadRadius: 5,
+                        offset: Offset(0, -1),
+                        blurRadius: 8)
+                  ]),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  TabItem(
+                      selected: currentSelected == 0,
+                      iconData: Icons.home,
+                      title: "SCHEDULE JOBS",
+                      callbackFunction: () {
+                        navScheduleJobs();
+                        widget.onChanged(0);
+                      }),
+                  TabItem(
+                      selected: currentSelected == 1,
+                      iconData: Icons.search,
+                      title: "REMOTES",
+                      callbackFunction: () {
+                        navRemotes();
+                        widget.onChanged(1);
+                      }),
+                  TabItem(
+                      selected: currentSelected == 2,
+                      iconData: Icons.person,
+                      title: "JOB STATUS",
+                      callbackFunction: () {
+                        navJobStatus();
+                        widget.onChanged(2);
+                      })
+                ],
+              ),
             ),
-          ),
-          IgnorePointer(
-            child: Container(
-              decoration: BoxDecoration(color: Colors.transparent),
-              child: Align(
-                heightFactor: 1,
-                alignment: Alignment(_positionAnimation.value, 0),
-                child: FractionallySizedBox(
-                  widthFactor: 1 / 3,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: <Widget>[
-                      SizedBox(
-                        height: 90,
-                        width: 90,
-                        child: ClipRect(
-                            clipper: HalfClipper(),
-                            child: Container(
-                              child: Center(
-                                child: Container(
-                                    width: 70,
-                                    height: 70,
-                                    decoration: BoxDecoration(
-                                        color:
-                                            // --- Above Circle -----------------------------------
-                                            Color.fromRGBO(175, 175, 175, 0.8),
-                                        shape: BoxShape.circle,
-                                        boxShadow: [
-                                          BoxShadow(
-                                              // --- Above circle shadow --------------------------
-                                              color:
-                                                  Color.fromRGBO(1, 1, 1, 0.5),
-                                              offset: Offset(0, -1),
-                                              spreadRadius: 4,
-                                              blurRadius: 8)
-                                        ])),
-                              ),
-                            )),
-                      ),
-                      SizedBox(
-                          height: 70,
+            IgnorePointer(
+              child: Container(
+                decoration: BoxDecoration(color: Colors.transparent),
+                child: Align(
+                  heightFactor: 1,
+                  alignment: Alignment(_positionAnimation.value, 0),
+                  child: FractionallySizedBox(
+                    widthFactor: 1 / 3,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: <Widget>[
+                        SizedBox(
+                          height: 90,
                           width: 90,
-                          child: CustomPaint(
-                            painter: HalfPainter(),
-                          )),
-                      SizedBox(
-                        height: 60,
-                        width: 60,
-                        child: Container(
-                          decoration: BoxDecoration(
+                          child: ClipRect(
+                              clipper: HalfClipper(),
+                              child: Container(
+                                child: Center(
+                                  child: Container(
+                                      width: 70,
+                                      height: 70,
+                                      decoration: BoxDecoration(
+                                          color:
+                                              // --------------------------------- Above Circle ---
+                                              Color.fromRGBO(
+                                                  175, 175, 175, 0.8),
+                                          shape: BoxShape.circle,
+                                          boxShadow: [
+                                            BoxShadow(
+                                                // ------------------------------- Above circle shadow ---
+                                                color: Color.fromRGBO(
+                                                    1, 1, 1, 0.5),
+                                                offset: Offset(0, -1),
+                                                spreadRadius: 4,
+                                                blurRadius: 8)
+                                          ])),
+                                ),
+                              )),
+                        ),
+                        SizedBox(
+                            height: 70,
+                            width: 90,
+                            child: CustomPaint(
+                              painter: HalfPainter(),
+                            )),
+                        SizedBox(
+                          height: 60,
+                          width: 60,
+                          child: Container(
+                            decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              // --------- Main Circle --------------------------------------------
+                              // ------------------------------------------------- Main Circle ---
                               color: Color(0xffacacac),
                               //color: Color(0xFF484848),
                               border: Border.all(
-                                  // ----------- Inner circle ring --------------------------------
+                                  // --------------------------------------------- Inner circle ring ---
                                   color: Color.fromRGBO(30, 30, 30, 0.6),
                                   width: 3,
-                                  style: BorderStyle.solid)),
-                          child: Padding(
-                            padding: const EdgeInsets.all(0.0),
-                            child: Opacity(
-                              opacity: fabIconAlpha,
-                              child: Icon(
-                                activeIcon,
-                                // --- Middle Icon ------------------------------------------------
-                                color: Color(0xcc454449),
-                                //color: Color(0xcc82b9ff),
+                                  style: BorderStyle.solid),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(0.0),
+                              child: Opacity(
+                                opacity: fabIconAlpha,
+                                child: Icon(
+                                  activeIcon,
+                                  // --------------------------------------------- Middle Icon ---
+                                  color: Color(0xcc454449),
+                                  //color: Color(0xcc82b9ff),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      )
-                    ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  _initAnimationAndStart(double from, double to) {
-    _positionTween.begin = from;
-    _positionTween.end = to;
+  _initAnimationAndStart(double from, double to, {bool menuHidden = false}) {
+    if (!menuHidden) {
+      _positionTween.begin = from;
+      _positionTween.end = to;
 
-    _animationController.reset();
-    _fadeOutController.reset();
-    _animationController.forward();
-    _fadeOutController.forward();
+      _animationController.reset();
+      _fadeOutController.reset();
+      _menuController.reverse();
+      _animationController.forward();
+      _fadeOutController.forward();
+    } else {
+      _menuController.forward().orCancel;
+    }
   }
 }
 
@@ -293,7 +355,7 @@ class HalfPainter extends CustomPainter {
     path.arcTo(afterRect, vector.radians(180), vector.radians(-90), false);
     path.close();
     canvas.drawPath(
-      path, // --- Background Upper Ring ---------------------------------------
+      path, // ----------------------------------------------------------------- Background Upper Ring ---
       Paint()..color = Color.fromRGBO(15, 15, 15, 0.5),
     );
   }

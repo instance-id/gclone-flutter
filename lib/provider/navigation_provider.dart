@@ -1,17 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:gclone/models/get_data.dart';
 import 'package:gclone/routes/job_status.dart';
 import 'package:gclone/routes/remotes.dart';
 import 'package:gclone/routes/schedule_jobs.dart';
 
-enum NavPages { Remotes, ScheduledJobs, JobStatus }
+enum NavPages { ScheduledJobs, Remotes, JobStatus, ProviderList }
 
 class NavigationProvider with ChangeNotifier {
   int currentNavigation = 1;
-
-  NavigationProvider(this._getDataPlugin);
-  final GetDataPlugin _getDataPlugin;
 
   Widget get getNavigation {
     if (currentNavigation == 1) {

@@ -1,11 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gclone/animations/animate_provider.dart';
+import 'package:gclone/models/get_data.dart';
 import 'package:gclone/models/provider_data.dart';
+import 'package:gclone/models/stepper/stepper_settings.dart';
 import 'package:gclone/routes/provider_details.dart';
 import 'package:gclone/routes/provider_item.dart';
+import 'package:provider/provider.dart';
+
+ProviderData currentProvider = new ProviderData();
+bool hasBuilt = false;
 
 class ProviderList extends StatefulWidget {
+  const ProviderList({Key key}) : super(key: key);
+
   @override
   _ProviderListState createState() => _ProviderListState();
 }
@@ -34,17 +42,24 @@ class _ProviderListState extends State<ProviderList>
   @override
   Widget build(BuildContext context) {
     var animation = new ProviderAnimation(_controller);
-    //var _providerList = Provider.of<ProviderData>(context).providerList;
-    var list = new ProviderData();
-    var _providerList = getProviderList();
-    Widget providerList() {
-      return new Container(
-        child: new ListView.builder(
-          itemCount: _providerList.length,
-          itemBuilder: (BuildContext context, int index) {
-            var provider = _providerList[index];
+    var data = Provider.of<GetDataPlugin>(context);
+    var stepperData = Provider.of<StepperSetting>(context);
 
-            return ProviderListItem(provider);
+    ProviderDetails().setDetails(currentProvider);
+
+    Widget _providerList() {
+      return new Container(
+        padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+        // --------------------------------------------------------------------- List Builder
+        child: new ListView.builder(
+          itemCount: data.providerList.length,
+          itemBuilder: (BuildContext context, int index) {
+            if (!hasBuilt) {
+              currentProvider = data.providerList[index];
+              stepperData.setInitialSelectedProvider(currentProvider);
+              hasBuilt = true;
+            }
+            return ProviderListItem(data.providerList[index], data);
           },
         ),
       );
@@ -55,21 +70,25 @@ class _ProviderListState extends State<ProviderList>
         child: Row(
           children: <Widget>[
             Column(
+              mainAxisSize: MainAxisSize.max,
               children: <Widget>[
+                // ------------------------------------------------------------- Provider List
                 Container(
-                  width: MediaQuery.of(context).size.width * 0.5,
-                  height: MediaQuery.of(context).size.height,
-                  child: providerList(),
+                  height: MediaQuery.of(context).size.height * 1 - 155,
+                  width: MediaQuery.of(context).size.width * 0.4,
+                  child: _providerList(),
                 ),
               ],
             ),
             Expanded(
+              // --------------------------------------------------------------- Provider Details
               child: Container(
-                width: MediaQuery.of(context).size.width * 0.5,
+                height: MediaQuery.of(context).size.height * 1 - 155,
+                width: MediaQuery.of(context).size.width * 0.6,
                 padding: EdgeInsets.fromLTRB(5, 5, 25, 0),
                 child: ProviderDetails(),
               ),
-            ),
+            )
           ],
         ),
       );
@@ -78,62 +97,61 @@ class _ProviderListState extends State<ProviderList>
     Widget topContent() {
       return Stack(
         children: <Widget>[
-          Positioned(
-            left: 8.0,
-            top: 5.0,
-            child: InkWell(
-              onTap: () {
-                Navigator.of(context).pop();
-              },
-              child: Icon(Icons.arrow_back, color: Colors.white),
-            ),
-          ),
           Column(
             children: <Widget>[
-              Container(
-                margin: EdgeInsets.fromLTRB(0, 0, 0, 25),
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(color: Color(0xFF424242), boxShadow: [
-                  BoxShadow(
-                      color: Colors.black26,
-                      spreadRadius: 5,
-                      offset: Offset(0, -1),
-                      blurRadius: 8)
-                ]),
-                child: Container(
-                  padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                  child: Center(
-                    child: Text(
-                      "Select a storage provider",
-                      style: TextStyle(
-                        fontFamily: 'Raleway',
-                        fontSize: 22,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+//              Container(
+//                margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
+//                width: MediaQuery.of(context).size.width,
+//                height: 55,
+//                decoration: BoxDecoration(color: Color(0xFF424242), boxShadow: [
+//                  BoxShadow(
+//                      color: Colors.black26,
+//                      spreadRadius: 5,
+//                      offset: Offset(0, -1),
+//                      blurRadius: 8)
+//                ]),
+//                child: Container(
+//                  // ----------------------------------------------------------- Page Title
+//                  padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+//                  child: Center(
+//                    child: Text(
+//                      "Select a storage provider",
+//                      style: TextStyle(
+//                        fontFamily: 'Roboto',
+//                        fontWeight: FontWeight.w300,
+//                        fontSize: 22,
+//                      ),
+//                    ),
+//                  ),
+//                ),
+//              ),
               topContentData(),
             ],
           ),
+//          Positioned(
+//            left: 15.0,
+//            top: 17.0,
+//            child: InkWell(
+//              onTap: () {
+//                Navigator.of(context).pop();
+//              },
+//              child: Icon(Icons.arrow_back, color: Colors.white),
+//            ),
+//          ),
         ],
       );
     }
 
     Widget _buildAnimation(BuildContext context, Widget child) {
       return new Container(
-        child: topContent(),
+        color: Color(0xff303030),
+        child: topContentData(), // topContent(),
       );
     }
 
-    return Material(
-      type: MaterialType.transparency,
-      child: Scaffold(
-        body: new AnimatedBuilder(
-          animation: animation.controller,
-          builder: _buildAnimation,
-        ),
-      ),
+    return AnimatedBuilder(
+      animation: animation.controller,
+      builder: _buildAnimation,
     );
   }
 }

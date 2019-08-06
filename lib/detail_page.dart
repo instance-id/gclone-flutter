@@ -1,10 +1,14 @@
 import 'package:flutter/animation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:gclone/routes/provider_config.dart';
+import 'package:provider/provider.dart';
 
 import 'animations/animate_details.dart';
+import 'animations/charts/animate_chart.dart';
 import 'helpers/animate_route.dart';
-import 'helpers/charts/a_line_chart3.dart';
+import 'helpers/charts/fl_charts/fl_chart_line_single.dart';
+import 'models/pointer_status.dart';
 import 'models/provider_data.dart';
 
 class DetailPage extends StatefulWidget {
@@ -17,41 +21,64 @@ class DetailPage extends StatefulWidget {
   _DetailPageState createState() => _DetailPageState();
 }
 
-class _DetailPageState extends State<DetailPage>
-    with SingleTickerProviderStateMixin {
+class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
   AnimationController _controller;
+  AnimationController _chartController;
+  int _enterCounter = 0;
+  int _exitCounter = 0;
   @override
   void initState() {
+    // ------------------------------------------------------------------------- Animation Controller ---
     _controller = new AnimationController(
       duration: const Duration(milliseconds: 1000),
       vsync: this,
     )..addListener(() {
         setState(() {});
       });
-    _controller.forward();
+    _controller.forward().orCancel;
+
+    _chartController = new AnimationController(
+      duration: const Duration(milliseconds: 3000),
+      vsync: this,
+    )..addListener(() {
+        setState(() {});
+      });
+    _chartController.forward().orCancel;
     super.initState();
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    _chartController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    var animation = new DetailsAnimation(_controller);
+    var pointerStatus = Provider.of<PointerStatus>(context);
 
+    Size size = MediaQuery.of(context).size;
+    double screenHeight = size.height;
+    double abovePadding = MediaQuery.of(context).padding.top;
+    double appBarHeight = 55;
+    double leftHeight = screenHeight - abovePadding - appBarHeight;
+    var animation = new DetailsAnimation(_controller);
+    var chartAnimation = new AnimateCharts(_chartController);
+
+    // ------------------------------------------------------------------------- Status Indicator
     final levelIndicator = Container(
       child: Container(
         child: LinearProgressIndicator(
-            backgroundColor: Color.fromRGBO(255, 255, 255, 1),
-            value: animation
-                .completionValue.value, // widget.lesson.indicatorValue,
-            valueColor: AlwaysStoppedAnimation(Colors.green)),
+          backgroundColor: Color.fromRGBO(255, 255, 255, 1),
+          value:
+              animation.completionValue.value, // widget.lesson.indicatorValue,
+          valueColor: AlwaysStoppedAnimation(Colors.green),
+        ),
       ),
     );
 
+    // ------------------------------------------------------------------------- Top Content
     Widget topContentText() {
       return Container(
         child: Row(
@@ -62,6 +89,7 @@ class _DetailPageState extends State<DetailPage>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   SizedBox(height: 15.0),
+                  // ----------------------------------------------------------- Provider Icon
                   Hero(
                     tag: widget.providerData.key,
                     child: Icon(
@@ -71,6 +99,7 @@ class _DetailPageState extends State<DetailPage>
                     ),
                     //createRectTween: _createRectTween,
                   ),
+                  // ----------------------------------------------------------- Horizontal Divider
                   Container(
                     width: animation.dividerWidth.value,
                     child: new Divider(
@@ -78,6 +107,7 @@ class _DetailPageState extends State<DetailPage>
                     ),
                   ),
                   SizedBox(height: 10.0),
+                  // ----------------------------------------------------------- Provider Name
                   Text(
                     widget.providerData.provider,
                     style: TextStyle(
@@ -90,17 +120,23 @@ class _DetailPageState extends State<DetailPage>
               ),
             ),
             Container(
-              //padding: EdgeInsets.all(20),
-              width: MediaQuery.of(context).size.width * 0.62,
+              padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+              width: MediaQuery.of(context).size.width * 0.58,
               child: new Transform(
+                // ------------------------------------------------------------- Stats Chart
                 transform: new Matrix4.translationValues(
                   0.0,
-                  animation.chartPosition.value,
+                  chartAnimation.chartPosition.value,
                   0.0,
                 ),
                 child: new Opacity(
-                  opacity: animation.chartOpacity.value,
-                  child: use_LineChart(animation),
+                  opacity: chartAnimation.chartOpacity.value,
+                  child: Stack(
+                    children: <Widget>[
+                      LineChartSample2(chartAnimation),
+                    ],
+                  ),
+                  //  StatsLineChart(chartAnimation),
                 ),
               ),
             ),
@@ -113,6 +149,7 @@ class _DetailPageState extends State<DetailPage>
       return Stack(
         children: <Widget>[
           Container(
+            // ----------------------------------------------------------------- Top Container
             //height: MediaQuery.of(context).size.,
             padding: EdgeInsets.fromLTRB(60, 10, 60, 10),
             width: MediaQuery.of(context).size.width,
@@ -121,20 +158,22 @@ class _DetailPageState extends State<DetailPage>
               child: topContentText(),
             ),
           ),
+          // ------------------------------------------------------------------- Back Button
           Positioned(
-            left: 8.0,
-            top: 5.0,
+            left: 15.0,
+            top: 17.0,
             child: InkWell(
               onTap: () {
                 Navigator.of(context).pop();
               },
               child: Icon(Icons.arrow_back, color: Colors.white),
             ),
-          )
+          ),
         ],
       );
     }
 
+    // ------------------------------------------------------------------------- Backup Results
     Widget backupResults() {
       return Stack(
         children: <Widget>[
@@ -159,7 +198,8 @@ class _DetailPageState extends State<DetailPage>
                       child: Padding(
                         padding: EdgeInsets.only(left: 10.0),
                         child: Text(
-                          widget.providerData.level,
+                          // --------------------------------------------------- Backup Status Container
+                          widget.providerData.status,
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
@@ -181,9 +221,9 @@ class _DetailPageState extends State<DetailPage>
         color: Colors.white.withOpacity(animation.descriptionOpacity.value),
       ),
     );
-
+    // ------------------------------------------------------------------------- Configure Button
     final readButton = Container(
-      padding: EdgeInsets.symmetric(vertical: 40.0),
+      padding: EdgeInsets.symmetric(vertical: 30.0),
       width: MediaQuery.of(context).size.width,
       child: new Transform(
         transform: new Matrix4.translationValues(
@@ -192,27 +232,23 @@ class _DetailPageState extends State<DetailPage>
           0.0,
         ),
         child: new Opacity(
-          opacity: animation.videoScrollerOpacity.value,
+          opacity: animation.configureButtonOpacity.value,
           child: new SizedBox.fromSize(
             size: new Size.fromHeight(50.0),
             child: RaisedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  AnimateRoute(
-                    fullscreenDialog: true,
-                    builder: (context) => ProviderConfig(),
-                  ),
-                );
-              },
-              color: Color(0xFF424242),
-              child: Text(
-                "Configure this provider",
-                style: TextStyle(
-                  color: Colors.white,
+                color: Color(0xFF424242),
+                child: Text(
+                  "Configure this provider",
+                  style: TextStyle(color: Colors.white),
                 ),
-              ),
-            ),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      AnimateRoute(
+                        fullscreenDialog: true,
+                        builder: (context) => ProviderConfig(),
+                      ));
+                }),
           ),
         ),
       ),
@@ -222,7 +258,7 @@ class _DetailPageState extends State<DetailPage>
       return Container(
         // height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-
+        // --------------------------------------------------------------------- Bottom Content
         // color: Theme.of(context).primaryColor,
         padding: EdgeInsets.fromLTRB(60.0, 30, 60, 60),
         child: Center(
@@ -236,6 +272,7 @@ class _DetailPageState extends State<DetailPage>
       );
     }
 
+    // ------------------------------------------------------------------------- Main Layout Setup
     Widget _buildAnimation(BuildContext context, Widget child) {
       return new Column(
         children: <Widget>[
@@ -259,6 +296,7 @@ class _DetailPageState extends State<DetailPage>
       );
     }
 
+    // ------------------------------------------------------------------------- Main Layout Scaffold
     return Material(
       type: MaterialType.transparency,
       child: Scaffold(

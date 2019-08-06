@@ -12,7 +12,8 @@ require (
 	github.com/getlantern/hidden v0.0.0-20190325191715-f02dbb02be55 // indirect
 	github.com/getlantern/ops v0.0.0-20190325191751-d70cb0d6f85f // indirect
 	github.com/getlantern/systray v0.0.0-20190626064521-f2fa635d0474
-	github.com/go-flutter-desktop/go-flutter v0.27.0
+	github.com/go-flutter-desktop/go-flutter v0.27.4
+	github.com/go-gl/glfw v0.0.0-20190519095719-e6da0acd62b1
 	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/instance-id/gclone-plugins/version v0.0.1
 	github.com/mitchellh/go-homedir v1.1.0
@@ -33,5 +34,7 @@ replace github.com/instance-id/gclone_flutter => ../../../../go/src/github.com/i
 replace github.com/instance-id/gclone-plugins/version => ../../../../github.com/instance-id/gclone-plugins/version
 
 replace github.com/instance-id/gclone_flutter/backend/plugins/data => ../../../../go/src/github.com/instance-id/gclone_flutter/backend/plugins/data
+
+replace github.com/instance-id/gclone_flutter/backend/plugins/dragable => ../../../../go/src/github.com/instance-id/gclone_flutter/backend/plugins/dragable
 
 replace github.com/miguelpruivo/plugins_flutter_file_picker/example => ./../../../../../../../go/src/github.com/miguelpruivo/plugins_flutter_file_picker/example/desktop

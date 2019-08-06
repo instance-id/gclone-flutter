@@ -57,8 +57,11 @@ class AboutRoute extends StatelessWidget {
         },
       ),
     );
-    return ListView(
-      children: <Widget>[header]..addAll(aboutListTiles(context)),
+    return Container(
+      color: Color(0xFF303030),
+      child: ListView(
+        children: <Widget>[header]..addAll(aboutListTiles(context)),
+      ),
     );
   }
 }
