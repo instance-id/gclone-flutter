@@ -15,6 +15,7 @@ class _FileSelectorState extends State<FileSelector> {
   bool _multiPick = false;
   bool _hasValidMime = false;
   FileType _pickingType;
+  bool _loadingPath = false;
   TextEditingController _controller = new TextEditingController();
 
   @override
@@ -24,28 +25,33 @@ class _FileSelectorState extends State<FileSelector> {
   }
 
   void _openFileExplorer() async {
-    if (_pickingType != FileType.CUSTOM || _hasValidMime) {
-      try {
-        if (_multiPick) {
-          _path = null;
-          _paths = await FilePicker.getMultiFilePath(
-              type: _pickingType, fileExtension: _extension);
-        } else {
-          _paths = null;
-          _path = await FilePicker.getFilePath(
-              type: _pickingType, fileExtension: _extension);
-        }
-      } on PlatformException catch (e) {
-        print("Unsupported operation" + e.toString());
+    setState(() => _loadingPath = true);
+    try {
+      if (_multiPick) {
+        _path = null;
+        _paths = await FilePicker.getMultiFilePath(
+            type: _pickingType,
+            allowedExtensions: (_extension?.isNotEmpty ?? false)
+                ? _extension?.replaceAll(' ', '')?.split(',')
+                : null);
+      } else {
+        _paths = null;
+        _path = await FilePicker.getFilePath(
+            type: _pickingType,
+            allowedExtensions: (_extension?.isNotEmpty ?? false)
+                ? _extension?.replaceAll(' ', '')?.split(',')
+                : null);
       }
-      if (!mounted) return;
-
-      setState(() {
-        _fileName = _path != null
-            ? _path.split('/').last
-            : _paths != null ? _paths.keys.toString() : '...';
-      });
+    } on PlatformException catch (e) {
+      print("Unsupported operation" + e.toString());
     }
+    if (!mounted) return;
+    setState(() {
+      _loadingPath = false;
+      _fileName = _path != null
+          ? _path.split('/').last
+          : _paths != null ? _paths.keys.toString() : '...';
+    });
   }
 
   @override
@@ -69,35 +75,35 @@ class _FileSelectorState extends State<FileSelector> {
                     items: <DropdownMenuItem>[
                       new DropdownMenuItem(
                         child: new Text('FROM AUDIO'),
-                        value: FileType.AUDIO,
+                        value: FileType.audio,
                       ),
                       new DropdownMenuItem(
                         child: new Text('FROM IMAGE'),
-                        value: FileType.IMAGE,
+                        value: FileType.image,
                       ),
                       new DropdownMenuItem(
                         child: new Text('FROM VIDEO'),
-                        value: FileType.VIDEO,
+                        value: FileType.video,
                       ),
                       new DropdownMenuItem(
                         child: new Text('FROM ANY'),
-                        value: FileType.ANY,
+                        value: FileType.any,
                       ),
                       new DropdownMenuItem(
                         child: new Text('CUSTOM FORMAT'),
-                        value: FileType.CUSTOM,
+                        value: FileType.custom,
                       ),
                     ],
                     onChanged: (value) => setState(() {
                           _pickingType = value;
-                          if (_pickingType != FileType.CUSTOM) {
+                          if (_pickingType != FileType.custom) {
                             _controller.text = _extension = '';
                           }
                         })),
               ),
               new ConstrainedBox(
                 constraints: BoxConstraints.tightFor(width: 100.0),
-                child: _pickingType == FileType.CUSTOM
+                child: _pickingType == FileType.custom
                     ? new TextFormField(
                         maxLength: 15,
                         autovalidate: true,

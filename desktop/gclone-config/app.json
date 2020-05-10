@@ -1,7 +1,0 @@
-
-
-	{
-		"exec":"/usr/local/go/bin/godoc",
-		"args":"-http :6060"
-	}
-
