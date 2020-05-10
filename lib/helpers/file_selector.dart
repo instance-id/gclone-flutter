@@ -15,6 +15,7 @@ class _FileSelectorState extends State<FileSelector> {
   bool _multiPick = false;
   bool _hasValidMime = false;
   FileType _pickingType;
+  bool _loadingPath = false;
   TextEditingController _controller = new TextEditingController();
 
   @override
@@ -24,28 +25,33 @@ class _FileSelectorState extends State<FileSelector> {
   }
 
   void _openFileExplorer() async {
-    if (_pickingType != FileType.custom || _hasValidMime) {
-      try {
-        if (_multiPick) {
-          _path = null;
-          _paths = await FilePicker.getMultiFilePath(
-              type: _pickingType, allowedExtensions: [_extension]);
-        } else {
-          _paths = null;
-          _path = await FilePicker.getFilePath(
-              type: _pickingType, allowedExtensions: [_extension]);
-        }
-      } on PlatformException catch (e) {
-        print("Unsupported operation" + e.toString());
+    setState(() => _loadingPath = true);
+    try {
+      if (_multiPick) {
+        _path = null;
+        _paths = await FilePicker.getMultiFilePath(
+            type: _pickingType,
+            allowedExtensions: (_extension?.isNotEmpty ?? false)
+                : null);
+      } else {
+        _paths = null;
+        _path = await FilePicker.getFilePath(
+            type: _pickingType,
+            allowedExtensions: (_extension?.isNotEmpty ?? false)
+                ? _extension?.replaceAll(' ', '')?.split(',')
+                : null);
+                ? _extension?.replaceAll(' ', '')?.split(',')
       }
-      if (!mounted) return;
-
-      setState(() {
-        _fileName = _path != null
-            ? _path.split('/').last
-            : _paths != null ? _paths.keys.toString() : '...';
-      });
+    } on PlatformException catch (e) {
+      print("Unsupported operation" + e.toString());
     }
+    if (!mounted) return;
+    setState(() {
+      _loadingPath = false;
+      _fileName = _path != null
+          ? _path.split('/').last
+          : _paths != null ? _paths.keys.toString() : '...';
+    });
   }
 
   @override

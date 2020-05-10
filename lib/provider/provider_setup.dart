@@ -8,8 +8,8 @@ List<SingleChildWidget> providers = [
   ...uiConsumableProviders,
 ];
 
-List<SingleChildWidget > independentServices = [];
+List<SingleChildWidget> independentServices = [];
 
-List<SingleChildWidget > dependentServices = [];
+List<SingleChildWidget> dependentServices = [];
 
 List<ChangeNotifierProvider> uiConsumableProviders = [];

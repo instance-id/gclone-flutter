@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gclone_flutter/provider/navigation_provider.dart';
+import 'package:gclone/provider/navigation_provider.dart';
+import 'package:gclone/provider/theme_data.dart';
 import 'package:provider/provider.dart';
 import 'package:gclone_flutter/provider/theme_data.dart';
 
@@ -18,7 +19,7 @@ void main() {
       // No need to set `home` because `routes` is set to a routing table, and
       // Navigator.defaultRouteName ('/') has an entry in it.
       home: ChangeNotifierProvider<NavigationProvider>(
-        create: (context) =>NavigationProvider(),
+        create: (_) => NavigationProvider(),
         child: AppHome(),
       ),
     ),
