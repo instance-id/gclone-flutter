@@ -13,10 +13,12 @@ import 'models/provider_data.dart';
 
 class DetailPage extends StatefulWidget {
   final ProviderData providerData;
+
   DetailPage({
     Key key,
     this.providerData,
   }) : super(key: key);
+
   @override
   _DetailPageState createState() => _DetailPageState();
 }
@@ -26,6 +28,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
   AnimationController _chartController;
   int _enterCounter = 0;
   int _exitCounter = 0;
+
   @override
   void initState() {
     // ------------------------------------------------------------------------- Animation Controller ---
@@ -71,8 +74,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
       child: Container(
         child: LinearProgressIndicator(
           backgroundColor: Color.fromRGBO(255, 255, 255, 1),
-          value:
-              animation.completionValue.value, // widget.lesson.indicatorValue,
+          value: animation.completionValue.value, // widget.lesson.indicatorValue,
           valueColor: AlwaysStoppedAnimation(Colors.green),
         ),
       ),
@@ -110,10 +112,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                   // ----------------------------------------------------------- Provider Name
                   Text(
                     widget.providerData.provider,
-                    style: TextStyle(
-                        color: Colors.white
-                            .withOpacity(animation.nameOpacity.value),
-                        fontSize: 45.0),
+                    style: TextStyle(color: Colors.white.withOpacity(animation.nameOpacity.value), fontSize: 45.0),
                   ),
                   SizedBox(height: 10.0),
                 ],
@@ -178,13 +177,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
       return Stack(
         children: <Widget>[
           Container(
-            decoration: BoxDecoration(color: Color(0xFF424242), boxShadow: [
-              BoxShadow(
-                  color: Colors.black26,
-                  spreadRadius: 5,
-                  offset: Offset(0, -1),
-                  blurRadius: 8)
-            ]),
+            decoration: BoxDecoration(color: Color(0xFF424242), boxShadow: [BoxShadow(color: Colors.black26, spreadRadius: 5, offset: Offset(0, -1), blurRadius: 8)]),
             child: Container(
               padding: EdgeInsets.fromLTRB(60, 20, 60, 20),
               width: MediaQuery.of(context).size.width,
