@@ -490,7 +490,7 @@ void main() {
       // No need to set `home` because `routes` is set to a routing table, and
       // Navigator.defaultRouteName ('/') has an entry in it.
       home: ChangeNotifierProvider<NavigationProvider>(
-        builder: (_) => NavigationProvider(),
+        create: (_) => NavigationProvider(),
         child: AppHome(),
       ),
     ),

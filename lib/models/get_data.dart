@@ -5,10 +5,10 @@ import 'package:flutter/services.dart';
 import 'package:gclone/helpers/icons.dart';
 import 'package:gclone/helpers/icons_helper.dart';
 import 'package:gclone/models/provider_data.dart';
-import 'package:logging/logging.dart';
+import 'package:logger/logger.dart';
 
 class GetDataPlugin with ChangeNotifier {
-  final Logger log = new Logger('GetDataPlugin');
+  final Logger log = new Logger();
   static const _channel = const MethodChannel("instance.id/go/data");
   ProviderData _selectedProvider = new ProviderData();
   int _selectedProviderID;
@@ -108,7 +108,7 @@ class GetDataPlugin with ChangeNotifier {
         } catch (e) {}
       }
     } catch (e) {
-      log.warning("Could not get data in time!");
+      log.w("Could not get data in time!");
     }
 
     return rl;
