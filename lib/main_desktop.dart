@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:gclone/models/stepper/stepper_settings.dart';
-import 'package:gclone/provider/theme_data.dart';
+import 'package:gclone_flutter/models/stepper/stepper_settings.dart';
+import 'package:gclone_flutter/provider/theme_data.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 

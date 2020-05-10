@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:gclone/routes/about.dart';
-import 'package:gclone/routes/app_bar.dart';
-import 'package:gclone/routes/job_status.dart';
-import 'package:gclone/routes/provider_list.dart';
-import 'package:gclone/routes/remotes.dart';
-import 'package:gclone/routes/schedule_jobs.dart';
-import 'package:gclone/routes/tab_menu.dart';
+import 'package:gclone_flutter/routes/about.dart';
+import 'package:gclone_flutter/routes/app_bar.dart';
+import 'package:gclone_flutter/routes/job_status.dart';
+import 'package:gclone_flutter/routes/provider_list.dart';
+import 'package:gclone_flutter/routes/remotes.dart';
+import 'package:gclone_flutter/routes/schedule_jobs.dart';
+import 'package:gclone_flutter/routes/tab_menu.dart';
 
 //List remotes;
 //Map getData;
@@ -81,7 +81,7 @@ class _AppHomeState extends State<AppHome> with TickerProviderStateMixin {
               controller: pageController,
               children: pages,
               physics: BouncingScrollPhysics(),
-              
+
             ),
             Align(
                 alignment: Alignment.bottomCenter,

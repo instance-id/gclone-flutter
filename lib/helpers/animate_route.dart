@@ -13,7 +13,7 @@ class AnimateRoute<T> extends MaterialPageRoute<T> {
   Widget buildTransitions(BuildContext context, Animation<double> animation,
       Animation<double> secondaryAnimation, Widget child) {
     Animation<Offset> _offsetFloat;
-    if (settings.isInitialRoute) {
+    if (settings.name == "remotes") {
       return child;
     }
 

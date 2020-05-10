@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:gclone/routes/job_status.dart';
-import 'package:gclone/routes/remotes.dart';
-import 'package:gclone/routes/schedule_jobs.dart';
+import 'package:gclone_flutter/routes/job_status.dart';
+import 'package:gclone_flutter/routes/remotes.dart';
+import 'package:gclone_flutter/routes/schedule_jobs.dart';
 
 enum NavPages { ScheduledJobs, Remotes, JobStatus, ProviderList }
 

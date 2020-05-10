@@ -1,7 +1,7 @@
 import 'package:flutter/animation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:gclone/routes/provider_config.dart';
+import 'package:gclone_flutter/routes/provider_config.dart';
 import 'package:provider/provider.dart';
 
 import 'animations/animate_details.dart';

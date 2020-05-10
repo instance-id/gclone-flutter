@@ -24,16 +24,16 @@ class _FileSelectorState extends State<FileSelector> {
   }
 
   void _openFileExplorer() async {
-    if (_pickingType != FileType.CUSTOM || _hasValidMime) {
+    if (_pickingType != FileType.custom || _hasValidMime) {
       try {
         if (_multiPick) {
           _path = null;
           _paths = await FilePicker.getMultiFilePath(
-              type: _pickingType, fileExtension: _extension);
+              type: _pickingType, allowedExtensions: [_extension]);
         } else {
           _paths = null;
           _path = await FilePicker.getFilePath(
-              type: _pickingType, fileExtension: _extension);
+              type: _pickingType, allowedExtensions: [_extension]);
         }
       } on PlatformException catch (e) {
         print("Unsupported operation" + e.toString());
@@ -69,35 +69,35 @@ class _FileSelectorState extends State<FileSelector> {
                     items: <DropdownMenuItem>[
                       new DropdownMenuItem(
                         child: new Text('FROM AUDIO'),
-                        value: FileType.AUDIO,
+                        value: FileType.audio,
                       ),
                       new DropdownMenuItem(
                         child: new Text('FROM IMAGE'),
-                        value: FileType.IMAGE,
+                        value: FileType.image,
                       ),
                       new DropdownMenuItem(
                         child: new Text('FROM VIDEO'),
-                        value: FileType.VIDEO,
+                        value: FileType.video,
                       ),
                       new DropdownMenuItem(
                         child: new Text('FROM ANY'),
-                        value: FileType.ANY,
+                        value: FileType.any,
                       ),
                       new DropdownMenuItem(
                         child: new Text('CUSTOM FORMAT'),
-                        value: FileType.CUSTOM,
+                        value: FileType.custom,
                       ),
                     ],
                     onChanged: (value) => setState(() {
                           _pickingType = value;
-                          if (_pickingType != FileType.CUSTOM) {
+                          if (_pickingType != FileType.custom) {
                             _controller.text = _extension = '';
                           }
                         })),
               ),
               new ConstrainedBox(
                 constraints: BoxConstraints.tightFor(width: 100.0),
-                child: _pickingType == FileType.CUSTOM
+                child: _pickingType == FileType.custom
                     ? new TextFormField(
                         maxLength: 15,
                         autovalidate: true,

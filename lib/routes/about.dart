@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gclone/models/app_data.dart';
+import 'package:gclone_flutter/models/app_data.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
 
 // Inspired by the about page in Eajy's flutter demo:

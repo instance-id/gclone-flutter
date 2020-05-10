@@ -1,4 +1,4 @@
-package com.example.gclone;
+package com.example.gclone_flutter;
 import android.os.Bundle;
 import gonativelib.DataProcessor;
 import io.flutter.app.FlutterActivity;

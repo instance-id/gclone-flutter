@@ -1026,7 +1026,6 @@ final icons = <FAIcons>[
   FAIcons(FontAwesomeIcons.hardHat, 'hardHat'),
   FAIcons(FontAwesomeIcons.hashtag, 'hashtag'),
   FAIcons(FontAwesomeIcons.hatWizard, 'hatWizard'),
-  FAIcons(FontAwesomeIcons.haykal, 'haykal'),
   FAIcons(FontAwesomeIcons.hdd, 'hdd'),
   FAIcons(FontAwesomeIcons.solidHdd, 'solidHdd'),
   FAIcons(FontAwesomeIcons.heading, 'heading'),

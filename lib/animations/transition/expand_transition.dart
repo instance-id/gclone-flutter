@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gclone/helpers/styling.dart';
+import 'package:gclone_flutter/helpers/styling.dart';
 
 class ExpandItemPageTransition extends StatelessWidget {
   const ExpandItemPageTransition({

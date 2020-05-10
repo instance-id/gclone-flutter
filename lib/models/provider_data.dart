@@ -1,7 +1,7 @@
 import 'dart:core';
 
 import 'package:flutter/material.dart';
-import 'package:gclone/helpers/icons_helper.dart';
+import 'package:gclone_flutter/helpers/icons_helper.dart';
 
 class ProviderData with ChangeNotifier {
   List<ProviderData> providerList;

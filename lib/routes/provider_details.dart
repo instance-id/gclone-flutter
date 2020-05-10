@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:gclone/animations/animate_provider.dart';
-import 'package:gclone/models/get_data.dart';
-import 'package:gclone/models/provider_data.dart';
-import 'package:gclone/routes/provider_list.dart';
+import 'package:gclone_flutter/animations/animate_provider.dart';
+import 'package:gclone_flutter/models/get_data.dart';
+import 'package:gclone_flutter/models/provider_data.dart';
+import 'package:gclone_flutter/routes/provider_list.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 

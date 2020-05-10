@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:gclone/helpers/flutter_reorderable_list.dart';
+import 'package:gclone_flutter/helpers/flutter_reorderable_list.dart';
 
 void main() => runApp(MyApp());
 

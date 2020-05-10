@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:gclone/animations/charts/animate_chart.dart';
-import 'package:gclone/helpers/charts/chart_source/bezier/bezier_chart_config.dart';
-import 'package:gclone/helpers/charts/chart_source/bezier/bezier_chart_widget.dart';
-import 'package:gclone/helpers/charts/chart_source/bezier/bezier_line.dart';
+import 'package:gclone_flutter/animations/charts/animate_chart.dart';
+import 'package:gclone_flutter/helpers/charts/chart_source/bezier/bezier_chart_config.dart';
+import 'package:gclone_flutter/helpers/charts/chart_source/bezier/bezier_chart_widget.dart';
+import 'package:gclone_flutter/helpers/charts/chart_source/bezier/bezier_line.dart';
 
 class StatsLineChart extends StatefulWidget {
   StatsLineChart(AnimateCharts animation) : _chartController = animation;

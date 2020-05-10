@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:gclone/helpers/params.dart';
+import 'package:gclone_flutter/helpers/params.dart';
 
 import '../provider_data.dart';
 

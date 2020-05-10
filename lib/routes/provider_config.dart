@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:gclone/animations/animate_provider.dart';
+import 'package:gclone_flutter/animations/animate_provider.dart';
 
 class ProviderConfig extends StatefulWidget {
   @override

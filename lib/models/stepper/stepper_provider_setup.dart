@@ -1,9 +1,9 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:gclone/models/provider_data.dart';
-import 'package:gclone/models/stepper/stepper_settings.dart';
-import 'package:gclone/routes/provider_list.dart';
+import 'package:gclone_flutter/models/provider_data.dart';
+import 'package:gclone_flutter/models/stepper/stepper_settings.dart';
+import 'package:gclone_flutter/routes/provider_list.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 

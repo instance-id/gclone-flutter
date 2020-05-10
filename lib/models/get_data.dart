@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:gclone/helpers/icons.dart';
-import 'package:gclone/helpers/icons_helper.dart';
-import 'package:gclone/models/provider_data.dart';
+import 'package:gclone_flutter/helpers/icons.dart';
+import 'package:gclone_flutter/helpers/icons_helper.dart';
+import 'package:gclone_flutter/models/provider_data.dart';
 import 'package:logging/logging.dart';
 
 class GetDataPlugin with ChangeNotifier {

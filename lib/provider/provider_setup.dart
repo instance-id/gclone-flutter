@@ -1,14 +1,15 @@
 // provider_setup.dart
 import 'package:provider/provider.dart';
+import 'package:provider/single_child_widget.dart';
 
-List<SingleChildCloneableWidget> providers = [
+List<SingleChildWidget> providers = [
   ...independentServices,
   ...dependentServices,
   ...uiConsumableProviders,
 ];
 
-List<SingleChildCloneableWidget> independentServices = [];
+List<SingleChildWidget > independentServices = [];
 
-List<SingleChildCloneableWidget> dependentServices = [];
+List<SingleChildWidget > dependentServices = [];
 
 List<ChangeNotifierProvider> uiConsumableProviders = [];

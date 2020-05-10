@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:gclone/animations/slide_in.dart';
-import 'package:gclone/helpers/animate_route.dart';
-import 'package:gclone/models/get_data.dart';
-import 'package:gclone/models/provider_data.dart';
+import 'package:gclone_flutter/animations/slide_in.dart';
+import 'package:gclone_flutter/helpers/animate_route.dart';
+import 'package:gclone_flutter/models/get_data.dart';
+import 'package:gclone_flutter/models/provider_data.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 

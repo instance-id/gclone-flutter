@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:gclone/animations/animate_provider.dart';
-import 'package:gclone/models/get_data.dart';
-import 'package:gclone/models/provider_data.dart';
-import 'package:gclone/models/stepper/stepper_settings.dart';
-import 'package:gclone/routes/provider_details.dart';
-import 'package:gclone/routes/provider_item.dart';
+import 'package:gclone_flutter/animations/animate_provider.dart';
+import 'package:gclone_flutter/models/get_data.dart';
+import 'package:gclone_flutter/models/provider_data.dart';
+import 'package:gclone_flutter/models/stepper/stepper_settings.dart';
+import 'package:gclone_flutter/routes/provider_details.dart';
+import 'package:gclone_flutter/routes/provider_item.dart';
 import 'package:provider/provider.dart';
 
 ProviderData currentProvider = new ProviderData();

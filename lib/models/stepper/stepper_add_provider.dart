@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gclone/models/stepper/stepper_settings.dart';
+import 'package:gclone_flutter/models/stepper/stepper_settings.dart';
 
 import '../provider_data.dart';
 

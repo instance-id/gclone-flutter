@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gclone/helpers/animate_route.dart';
-import 'package:gclone/helpers/custom_color.dart';
-import 'package:gclone/routes/provider_add.dart';
-import 'package:gclone/routes/tab_menu.dart';
+import 'package:gclone_flutter/helpers/animate_route.dart';
+import 'package:gclone_flutter/helpers/custom_color.dart';
+import 'package:gclone_flutter/routes/provider_add.dart';
+import 'package:gclone_flutter/routes/tab_menu.dart';
 
 class MainAppBar extends StatelessWidget {
   MainAppBar(BuildContext context, this.keyNavigator, this._pageController);

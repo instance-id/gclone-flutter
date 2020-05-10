@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gclone/animations/slide_in.dart';
-import 'package:gclone/models/get_data.dart';
-import 'package:gclone/models/provider_data.dart';
+import 'package:gclone_flutter/animations/slide_in.dart';
+import 'package:gclone_flutter/models/get_data.dart';
+import 'package:gclone_flutter/models/provider_data.dart';
 
 import '../detail_page.dart';
 
